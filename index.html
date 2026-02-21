@@ -1,0 +1,995 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { initializeApp } from 'firebase/app';
+import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from 'firebase/auth';
+import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot } from 'firebase/firestore';
+import { 
+  Clapperboard, Plus, LayoutGrid, Youtube, Smartphone, FileEdit, 
+  ArrowRight, ChevronLeft, Trash2, Save, PlusCircle, Settings, X, 
+  FileText, Clock, Gauge, Bold, Italic, Underline, Palette, ChevronDown, 
+  Type, AlignLeft, User, AlignRight, Download, Upload, Play, Pause
+} from 'lucide-react';
+
+const fontFamilies = ['Arial', 'Courier New', 'Georgia', 'Times New Roman', 'Verdana', 'Inter', 'Comic Sans MS'];
+
+const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+// --- MAIN APP COMPONENT ---
+export default function App() {
+  const [scripts, setScripts] = useState([]);
+  const [globalWPM, setGlobalWPM] = useState(150);
+  const [defaultFont, setDefaultFont] = useState('Inter');
+  const [defaultFontSize, setDefaultFontSize] = useState(18);
+  const [currentView, setCurrentView] = useState('dashboard');
+  const [activeScriptId, setActiveScriptId] = useState(null);
+  
+  const [filter, setFilter] = useState('all');
+  const [showPlatformModal, setShowPlatformModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
+  
+  const [settingsWpmInput, setSettingsWpmInput] = useState(150);
+  const [settingsFontInput, setSettingsFontInput] = useState('Inter');
+  const [settingsFontSizeInput, setSettingsFontSizeInput] = useState(18);
+  const fileInputRef = useRef(null);
+
+  const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
+
+  // Auth Initialization
+  useEffect(() => {
+    const initAuth = async () => {
+      try {
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+          await signInWithCustomToken(auth, __initial_auth_token);
+        } else {
+          await signInAnonymously(auth);
+        }
+      } catch (err) {
+        console.error("Auth error", err);
+      }
+    };
+    initAuth();
+    const unsubscribe = onAuthStateChanged(auth, (u) => {
+      setUser(u);
+      setAuthLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  // Data Fetching
+  useEffect(() => {
+    if (!user) return;
+
+    const scriptsRef = collection(db, 'artifacts', appId, 'users', user.uid, 'scripts');
+    const unsubScripts = onSnapshot(scriptsRef, (snapshot) => {
+      const loadedScripts = [];
+      snapshot.forEach(doc => loadedScripts.push({ id: doc.id, ...doc.data() }));
+      setScripts(loadedScripts);
+    }, (err) => console.error("Error fetching scripts:", err));
+
+    const settingsRef = collection(db, 'artifacts', appId, 'users', user.uid, 'settings');
+    const unsubSettings = onSnapshot(settingsRef, (snapshot) => {
+      snapshot.forEach(doc => {
+        if (doc.id === 'userSettings') {
+          const data = doc.data();
+          if (data.globalWPM) { setGlobalWPM(data.globalWPM); setSettingsWpmInput(data.globalWPM); }
+          if (data.defaultFont) { setDefaultFont(data.defaultFont); setSettingsFontInput(data.defaultFont); }
+          if (data.defaultFontSize) { setDefaultFontSize(data.defaultFontSize); setSettingsFontSizeInput(data.defaultFontSize); }
+        }
+      });
+    }, (err) => console.error("Error fetching settings:", err));
+
+    return () => {
+      unsubScripts();
+      unsubSettings();
+    };
+  }, [user]);
+
+  const handleSaveScript = async (scriptData) => {
+    if (!user) return;
+    const isExisting = activeScriptId && activeScriptId !== 'new';
+    const scriptId = isExisting ? activeScriptId : Date.now().toString();
+    
+    const scriptToSave = {
+      ...scriptData,
+      updatedAt: Date.now(),
+      createdAt: isExisting ? scripts.find(s => s.id === scriptId)?.createdAt || Date.now() : Date.now()
+    };
+
+    const scriptRef = doc(db, 'artifacts', appId, 'users', user.uid, 'scripts', scriptId);
+    await setDoc(scriptRef, scriptToSave);
+    
+    setCurrentView('dashboard');
+    setActiveScriptId(null);
+  };
+
+  const handleDeleteScript = async (id) => {
+    if (!user) return;
+    if (window.confirm('Are you sure you want to delete this script? This cannot be undone.')) {
+      const scriptRef = doc(db, 'artifacts', appId, 'users', user.uid, 'scripts', id);
+      await deleteDoc(scriptRef);
+      setCurrentView('dashboard');
+      setActiveScriptId(null);
+    }
+  };
+
+  const openEditor = (id = null, platform = 'youtube') => {
+    setActiveScriptId(id);
+    if (!id) {
+      // Starting a new script, we need a dummy active script in state to pass the platform
+      setActiveScriptId('new');
+      window.__tempPlatform = platform; // hacky but works for instant passing
+    }
+    setCurrentView('editor');
+    setShowPlatformModal(false);
+  };
+
+  const saveSettings = async () => {
+    setGlobalWPM(settingsWpmInput);
+    setDefaultFont(settingsFontInput);
+    setDefaultFontSize(settingsFontSizeInput);
+    setShowSettingsModal(false);
+
+    if (!user) return;
+    const settingsRef = doc(db, 'artifacts', appId, 'users', user.uid, 'settings', 'userSettings');
+    await setDoc(settingsRef, {
+      globalWPM: settingsWpmInput,
+      defaultFont: settingsFontInput,
+      defaultFontSize: settingsFontSizeInput
+    }, { merge: true });
+  };
+
+  const handleExportData = () => {
+    const dataToExport = {
+      scripts: scripts,
+      settings: { globalWPM, defaultFont, defaultFontSize },
+      exportDate: new Date().toISOString()
+    };
+    const dataStr = JSON.stringify(dataToExport, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `scriptflow_backup_${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImportData = async (event) => {
+    const file = event.target.files[0];
+    if (!file || !user) return;
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const importedData = JSON.parse(e.target.result);
+        if (importedData.scripts && Array.isArray(importedData.scripts)) {
+          if (window.confirm('Importing data will overwrite your current scripts in the cloud. Are you sure you want to proceed?')) {
+            // Upload all imported scripts to Firestore
+            for (const script of importedData.scripts) {
+              const scriptRef = doc(db, 'artifacts', appId, 'users', user.uid, 'scripts', script.id);
+              await setDoc(scriptRef, script);
+            }
+
+            if (importedData.settings) {
+              const settingsRef = doc(db, 'artifacts', appId, 'users', user.uid, 'settings', 'userSettings');
+              await setDoc(settingsRef, importedData.settings, { merge: true });
+            }
+            
+            alert('Data successfully imported to cloud!');
+            setShowSettingsModal(false);
+          }
+        } else {
+          alert('Invalid backup file format. Missing scripts data.');
+        }
+      } catch (error) {
+        console.error(error);
+        alert('Error reading the backup file. Please ensure it is a valid JSON file.');
+      }
+    };
+    reader.readAsText(file);
+    event.target.value = ''; // Reset input so the same file can be selected again if needed
+  };
+
+  const activeScript = activeScriptId === 'new' 
+    ? { title: '', platform: window.__tempPlatform, blocks: [{ id: 'b1', title: 'Hook', content: '' }] }
+    : scripts.find(s => s.id === activeScriptId);
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0f1115] text-[#f3f4f6] font-sans">
+        <div className="flex flex-col items-center gap-4">
+          <Clapperboard className="w-10 h-10 text-indigo-500 animate-pulse" />
+          <h2 className="text-xl font-bold text-gray-400">Loading your Cloud Studio...</h2>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen flex flex-col antialiased selection:bg-indigo-500 selection:text-white bg-[#0f1115] text-[#f3f4f6] font-sans">
+      
+      {/* Global CSS for Editor Formats & Glassmorphism */}
+      <style>{`
+        .glass { background: rgba(31, 41, 55, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .block-content { font-family: ${defaultFont === 'Inter' ? "'Inter', sans-serif" : `"${defaultFont}", sans-serif`}; font-size: ${defaultFontSize}px; }
+        .block-content:focus { outline: none; }
+        .block-content h1 { font-weight: bold; text-transform: uppercase; margin-top: 1em; margin-bottom: 0.5em; color: #fff; font-size: 1.25em; }
+        .block-content h2 { text-transform: uppercase; margin-top: 1em; margin-bottom: 0.5em; text-align: center; width: 60%; margin-left: auto; margin-right: auto; color: #e5e7eb; font-size: 1.1em;}
+        .block-content blockquote { text-align: left; width: 70%; margin: 0 auto 1em auto; font-size: 1.05em; font-style: italic; border-left: 2px solid #6366f1; padding-left: 1rem;}
+        .block-content p { margin-bottom: 0.75em; line-height: 1.6; }
+        
+        /* Hide number input arrows for clean toolbar look */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+      `}</style>
+
+      {/* App Header */}
+      <header className="glass sticky top-0 z-40 border-b border-gray-800">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-2 cursor-pointer" onClick={() => setCurrentView('dashboard')}>
+            <div className="p-2 bg-indigo-500 rounded-lg">
+              <Clapperboard className="w-5 h-5 text-white" />
+            </div>
+            <h1 className="text-xl font-bold tracking-tight text-white">Script<span className="text-indigo-400">Flow</span></h1>
+          </div>
+          <div className="flex items-center gap-3">
+            <button onClick={() => { 
+              setSettingsWpmInput(globalWPM); 
+              setSettingsFontInput(defaultFont);
+              setSettingsFontSizeInput(defaultFontSize);
+              setShowSettingsModal(true); 
+            }} className="p-2 text-gray-400 hover:text-white transition-colors rounded-full hover:bg-gray-800" title="Settings">
+              <Settings className="w-5 h-5" />
+            </button>
+            <button onClick={() => setShowPlatformModal(true)} className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-full font-medium transition-all shadow-lg shadow-indigo-500/20 transform hover:scale-105 active:scale-95">
+              <Plus className="w-4 h-4" />
+              <span>New Script</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content Area */}
+      {currentView === 'dashboard' ? (
+        <Dashboard 
+          scripts={scripts} 
+          filter={filter} 
+          setFilter={setFilter} 
+          openEditor={openEditor} 
+          openPlatformModal={() => setShowPlatformModal(true)} 
+        />
+      ) : (
+        <Editor 
+          script={activeScript} 
+          isNew={activeScriptId === 'new'}
+          globalWPM={globalWPM} 
+          defaultFontSize={defaultFontSize}
+          onSave={handleSaveScript} 
+          onClose={() => setCurrentView('dashboard')} 
+          onDelete={() => handleDeleteScript(activeScriptId)} 
+        />
+      )}
+
+      {/* Platform Modal */}
+      {showPlatformModal && (
+        <div className="fixed inset-0 z-[60] bg-[#0f1115]/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="glass w-full max-w-md rounded-2xl p-6 border border-gray-700 shadow-2xl">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-bold text-white">Choose Platform</h3>
+              <button onClick={() => setShowPlatformModal(false)} className="text-gray-400 hover:text-white transition-colors"><X className="w-5 h-5" /></button>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <button onClick={() => openEditor(null, 'youtube')} className="flex flex-col items-center justify-center gap-3 p-6 rounded-xl border border-gray-700 hover:border-red-500/50 hover:bg-red-500/10 transition-all group">
+                <Youtube className="w-10 h-10 text-gray-500 group-hover:text-red-500 transition-colors" />
+                <span className="font-medium text-gray-300 group-hover:text-white">YouTube</span>
+              </button>
+              <button onClick={() => openEditor(null, 'tiktok')} className="flex flex-col items-center justify-center gap-3 p-6 rounded-xl border border-gray-700 hover:border-cyan-400/50 hover:bg-gray-800 transition-all group">
+                <Smartphone className="w-10 h-10 text-gray-500 group-hover:text-cyan-400 transition-colors" />
+                <span className="font-medium text-gray-300 group-hover:text-white">TikTok</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Settings Modal */}
+      {showSettingsModal && (
+        <div className="fixed inset-0 z-[60] bg-[#0f1115]/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="glass w-full max-w-sm rounded-2xl p-6 border border-gray-700 shadow-2xl">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-bold text-white">Settings</h3>
+              <button onClick={() => setShowSettingsModal(false)} className="text-gray-400 hover:text-white transition-colors"><X className="w-5 h-5" /></button>
+            </div>
+            <div className="flex flex-col gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-2">Reading Speed (WPM)</label>
+                <input 
+                  type="number" 
+                  min="50" max="500" 
+                  value={settingsWpmInput}
+                  onChange={(e) => setSettingsWpmInput(e.target.value)}
+                  className="w-full bg-[#16191f] border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-indigo-500 transition-colors" 
+                />
+                <p className="text-xs text-gray-500 mt-2 mb-4">Set your exact reading words-per-minute. Used to calculate estimated time.</p>
+                
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-400 mb-2">Default Font</label>
+                    <select 
+                      value={settingsFontInput}
+                      onChange={(e) => setSettingsFontInput(e.target.value)}
+                      className="w-full bg-[#16191f] border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-indigo-500 transition-colors"
+                    >
+                      {fontFamilies.map(f => <option key={f} value={f}>{f}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-400 mb-2">Size (px)</label>
+                    <input 
+                      type="number" 
+                      min="10" max="72" 
+                      value={settingsFontSizeInput}
+                      onChange={(e) => setSettingsFontSizeInput(e.target.value)}
+                      className="w-full bg-[#16191f] border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-indigo-500 transition-colors" 
+                    />
+                  </div>
+                </div>
+
+                <button onClick={saveSettings} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition-all mt-1">
+                  Save Settings
+                </button>
+              </div>
+
+              <div className="border-t border-gray-800 pt-4">
+                <label className="block text-sm font-medium text-gray-400 mb-3">Data Management</label>
+                <div className="grid grid-cols-2 gap-3">
+                  <button onClick={handleExportData} className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white px-4 py-2 rounded-lg text-sm transition-colors border border-gray-700">
+                    <Download className="w-4 h-4" /> Backup
+                  </button>
+                  <button onClick={() => fileInputRef.current?.click()} className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white px-4 py-2 rounded-lg text-sm transition-colors border border-gray-700">
+                    <Upload className="w-4 h-4" /> Import
+                  </button>
+                  <input 
+                    type="file" 
+                    accept=".json" 
+                    ref={fileInputRef} 
+                    onChange={handleImportData} 
+                    className="hidden" 
+                  />
+                </div>
+                <p className="text-xs text-gray-500 mt-2">Download a JSON backup of your scripts, or restore from a previous file.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+}
+
+// --- DASHBOARD COMPONENT ---
+function Dashboard({ scripts, filter, setFilter, openEditor, openPlatformModal }) {
+  const filteredScripts = filter === 'all' ? scripts : scripts.filter(s => s.platform === filter);
+  
+  // Sort newest first
+  const sortedScripts = [...filteredScripts].sort((a, b) => b.updatedAt - a.updatedAt);
+
+  return (
+    <main className="flex-grow w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Tabs */}
+      <div className="flex space-x-2 mb-8 p-1 glass rounded-2xl w-max">
+        <button onClick={() => setFilter('all')} className={`px-6 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 ${filter === 'all' ? 'bg-gray-700 text-white shadow' : 'text-gray-400 hover:text-white hover:bg-gray-700/50'}`}>
+          <LayoutGrid className="w-4 h-4" /> All
+        </button>
+        <button onClick={() => setFilter('youtube')} className={`px-6 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 ${filter === 'youtube' ? 'bg-gray-700 text-white shadow' : 'text-gray-400 hover:text-white hover:bg-gray-700/50'}`}>
+          <Youtube className="w-4 h-4 text-red-500" /> YouTube
+        </button>
+        <button onClick={() => setFilter('tiktok')} className={`px-6 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 ${filter === 'tiktok' ? 'bg-gray-700 text-white shadow' : 'text-gray-400 hover:text-white hover:bg-gray-700/50'}`}>
+          <Smartphone className="w-4 h-4 text-cyan-400" /> TikTok
+        </button>
+      </div>
+
+      {sortedScripts.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {sortedScripts.map(script => {
+            const date = new Date(script.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            // Extract text from HTML blocks for the snippet
+            const snippetText = script.blocks ? script.blocks.map(b => b.content.replace(/<[^>]+>/g, '')).join(' ') : 'Empty script...';
+            const snippet = snippetText.length > 120 ? snippetText.substring(0, 120) + '...' : snippetText;
+
+            return (
+              <div key={script.id} onClick={() => openEditor(script.id)} className="glass rounded-2xl p-6 cursor-pointer hover:-translate-y-1 hover:shadow-xl hover:shadow-black/20 transition-all duration-300 group border border-gray-800 hover:border-gray-700 flex flex-col h-64">
+                <div className="flex justify-between items-start mb-4">
+                  {script.platform === 'youtube' ? (
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/20"><Youtube className="w-3.5 h-3.5" /> YouTube</span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-gray-800 text-gray-200 border border-gray-700"><Smartphone className="w-3.5 h-3.5 text-cyan-400" /> TikTok</span>
+                  )}
+                  <span className="text-xs text-gray-500">{date}</span>
+                </div>
+                <h3 className="text-xl font-bold text-gray-100 mb-3 line-clamp-2 group-hover:text-indigo-400 transition-colors">{script.title || 'Untitled Script'}</h3>
+                <p className="text-sm text-gray-400 line-clamp-4 flex-grow leading-relaxed">{snippet}</p>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <div className="w-24 h-24 mb-6 text-gray-700 bg-gray-800/50 rounded-full flex items-center justify-center">
+            <FileEdit className="w-10 h-10" />
+          </div>
+          <h3 className="text-xl font-medium text-gray-200 mb-2">No scripts found</h3>
+          <p className="text-gray-500 max-w-sm mb-6">You haven't created any scripts for this platform yet. Start writing your next viral hit!</p>
+          <button onClick={openPlatformModal} className="text-indigo-400 hover:text-indigo-300 font-medium flex items-center gap-1 transition-colors">
+            Create your first script <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+    </main>
+  );
+}
+
+// --- EDITOR COMPONENT (With Blocks & Bubble Toolbar) ---
+function Editor({ script, isNew, globalWPM, defaultFontSize, onSave, onClose, onDelete }) {
+  const [title, setTitle] = useState(script?.title || '');
+  const [blocks, setBlocks] = useState(script?.blocks && script.blocks.length > 0 ? script.blocks : [{ id: `b-${Date.now()}`, title: 'Hook', content: '' }]);
+  const [wordCount, setWordCount] = useState(0);
+  const editorContainerRef = useRef(null);
+
+  // Bubble Toolbar State
+  const [toolbarVisible, setToolbarVisible] = useState(false);
+  const [position, setPosition] = useState({ top: 0, left: 0 });
+  const [showColors, setShowColors] = useState(false);
+  const [showElements, setShowElements] = useState(false);
+  const [showFonts, setShowFonts] = useState(false);
+  const [fontSizeInput, setFontSizeInput] = useState(defaultFontSize || 16);
+  
+  const toolbarRef = useRef(null);
+  const savedRangeRef = useRef(null);
+
+  // Teleprompter State
+  const [showTeleprompter, setShowTeleprompter] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [scrollSpeed, setScrollSpeed] = useState(3);
+  const [teleprompterSize, setTeleprompterSize] = useState(64);
+  const teleprompterRef = useRef(null);
+  const requestRef = useRef();
+
+  const colors = ['#ffffff', '#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#f472b6'];
+
+  // Calculate Initial Stats
+  useEffect(() => {
+    updateStats();
+  }, [blocks]);
+
+  // Teleprompter Animation Loop
+  useEffect(() => {
+    const animate = () => {
+      if (isPlaying && teleprompterRef.current) {
+        teleprompterRef.current.scrollTop += scrollSpeed * 0.5;
+      }
+      requestRef.current = requestAnimationFrame(animate);
+    };
+    
+    if (isPlaying) {
+      requestRef.current = requestAnimationFrame(animate);
+    } else {
+      cancelAnimationFrame(requestRef.current);
+    }
+    
+    return () => cancelAnimationFrame(requestRef.current);
+  }, [isPlaying, scrollSpeed]);
+
+  // Handle Text Selection for Floating Bubble Toolbar
+  useEffect(() => {
+    const handleSelectionChange = () => {
+      const selection = window.getSelection();
+
+      // Check if focus or selection is inside the toolbar itself to prevent it from disappearing
+      if (toolbarRef.current && (
+        toolbarRef.current.contains(document.activeElement) || 
+        (selection.anchorNode && toolbarRef.current.contains(selection.anchorNode))
+      )) {
+        return;
+      }
+      
+      if (!selection || selection.isCollapsed || selection.rangeCount === 0) {
+        setToolbarVisible(false);
+        setShowColors(false);
+        setShowElements(false);
+        setShowFonts(false);
+        return;
+      }
+
+      // Check if selection is inside our blocks
+      if (editorContainerRef.current && editorContainerRef.current.contains(selection.anchorNode)) {
+        // Only show if inside a contentEditable area
+        let isInsideContentEditable = false;
+        let node = selection.anchorNode;
+        while (node && node !== editorContainerRef.current) {
+          if (node.nodeType === 1 && node.getAttribute('contenteditable') === 'true') {
+            isInsideContentEditable = true;
+            break;
+          }
+          node = node.parentNode;
+        }
+
+        if (isInsideContentEditable) {
+          const range = selection.getRangeAt(0);
+          savedRangeRef.current = range.cloneRange(); // Save selection to restore after using inputs
+          const rect = range.getBoundingClientRect();
+          
+          if (rect.width > 0) {
+            setPosition({
+              top: rect.top - 10, 
+              left: rect.left + (rect.width / 2) 
+            });
+            setToolbarVisible(true);
+          } else {
+            setToolbarVisible(false);
+          }
+        } else {
+          setToolbarVisible(false);
+        }
+      } else {
+        setToolbarVisible(false);
+      }
+    };
+
+    document.addEventListener('selectionchange', handleSelectionChange);
+    return () => document.removeEventListener('selectionchange', handleSelectionChange);
+  }, []);
+
+  const restoreSelection = () => {
+    if (savedRangeRef.current) {
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(savedRangeRef.current);
+
+      // If focus was lost to an input field in the toolbar, force it back to the editor
+      let node = savedRangeRef.current.commonAncestorContainer;
+      while (node && node.nodeType !== 1) {
+        node = node.parentNode;
+      }
+      if (node) {
+        const block = node.closest ? node.closest('.block-content') : null;
+        if (block && document.activeElement !== block) {
+          block.focus();
+        }
+      }
+    }
+  };
+
+  const applyFormat = (e, command, value = null) => {
+    e.preventDefault();
+    restoreSelection();
+    document.execCommand(command, false, value);
+    if (command === 'foreColor') setShowColors(false);
+    updateStats(); // Force stat update on format
+  };
+
+  const applyBlockFormat = (e, tag) => {
+    e.preventDefault();
+    restoreSelection();
+    document.execCommand('formatBlock', false, tag);
+    setShowElements(false);
+    updateStats();
+  };
+
+  const applyFontFamily = (e, font) => {
+    e.preventDefault();
+    restoreSelection();
+    document.execCommand('fontName', false, font);
+    setShowFonts(false);
+    updateStats();
+  };
+
+  const applyFontSizeValue = (size, e = null) => {
+    if (e) e.preventDefault();
+    restoreSelection();
+    
+    // Use the most universally supported method to wrap text natively
+    document.execCommand('fontSize', false, '7');
+    
+    const container = editorContainerRef.current;
+    if (!container) return;
+
+    const targetSize = size || 16;
+
+    // Immediately locate the wrapped text and inject our precise pixel size
+    const fonts = container.querySelectorAll('font[size="7"]');
+    fonts.forEach(el => {
+      el.removeAttribute('size');
+      el.style.fontSize = `${targetSize}px`;
+      el.style.lineHeight = 'normal';
+    });
+
+    // Fallback for some browsers (like Chrome) that might generate spans instead
+    const spans = container.querySelectorAll('span');
+    spans.forEach(el => {
+      if (el.style.fontSize === '-webkit-xxx-large' || el.style.fontSize === 'xxx-large') {
+        el.style.fontSize = `${targetSize}px`;
+        el.style.lineHeight = 'normal';
+      }
+    });
+
+    updateStats();
+  };
+
+  const adjustFontSize = (delta, e) => {
+    e.preventDefault();
+    const newSize = Number(fontSizeInput) + delta;
+    setFontSizeInput(newSize);
+    applyFontSizeValue(newSize, null);
+  };
+
+  const applyDirection = (e, dir) => {
+    e.preventDefault();
+    restoreSelection();
+
+    let node = window.getSelection().anchorNode;
+    if (node && node.nodeType === 3) node = node.parentNode;
+    
+    // Apply direction to the closest block container
+    const blockTags = ['P', 'DIV', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'BLOCKQUOTE', 'UL', 'LI'];
+    while (node && node !== editorContainerRef.current) {
+      if (blockTags.includes(node.tagName) || node.classList.contains('block-content')) {
+        node.setAttribute('dir', dir);
+        node.style.textAlign = dir === 'rtl' ? 'right' : 'left';
+        break;
+      }
+      node = node.parentNode;
+    }
+    updateStats();
+  };
+
+  const updateStats = () => {
+    if (editorContainerRef.current) {
+      // Get all content editable divs
+      const contentDivs = editorContainerRef.current.querySelectorAll('.block-content');
+      let text = '';
+      contentDivs.forEach(div => {
+        text += div.innerText + ' ';
+      });
+      const words = text.split(/\s+/).filter(w => w.length > 0);
+      setWordCount(words.length);
+    }
+  };
+
+  const handleBlockChange = (id, newContent) => {
+    setBlocks(blocks.map(b => b.id === id ? { ...b, content: newContent } : b));
+  };
+
+  const handleTitleChange = (id, newTitle) => {
+    setBlocks(blocks.map(b => b.id === id ? { ...b, title: newTitle } : b));
+  };
+
+  const addBlock = () => {
+    setBlocks([...blocks, { id: `b-${Date.now()}`, title: '', content: '' }]);
+  };
+
+  const removeBlock = (id) => {
+    setBlocks(blocks.filter(b => b.id !== id));
+  };
+
+  const saveAndClose = () => {
+    // Before saving, ensure we have the absolute latest innerHTML from the DOM
+    // Because React state might be one keystroke behind depending on onInput timing
+    const finalBlocks = blocks.map(b => {
+      const el = document.getElementById(b.id);
+      return {
+        ...b,
+        content: el ? el.innerHTML : b.content
+      };
+    });
+
+    const hasContent = finalBlocks.some(b => b.title.trim() || b.content.trim().replace(/<[^>]*>?/gm, ''));
+    if (!title.trim() && !hasContent && isNew) {
+      onClose(); // Don't save empty new scripts
+      return;
+    }
+
+    onSave({
+      title: title.trim(),
+      platform: script.platform,
+      blocks: finalBlocks
+    });
+  };
+
+  const totalSeconds = Math.ceil((wordCount / globalWPM) * 60);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  const formattedTime = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+  const ToolButton = ({ icon: Icon, onClick, active, title }) => (
+    <button
+      onMouseDown={onClick}
+      title={title}
+      className={`p-2 rounded-md transition-colors flex items-center justify-center ${active ? 'bg-indigo-500 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'}`}
+    >
+      <Icon size={16} />
+    </button>
+  );
+
+  return (
+    <div className="flex-grow w-full max-w-4xl mx-auto flex flex-col pb-12 overflow-y-auto">
+      {/* Editor Toolbar */}
+      <div className="sticky top-0 z-10 glass border-b border-gray-800 px-4 py-4 flex items-center justify-between mb-8">
+        <div className="flex items-center gap-4">
+          <button onClick={saveAndClose} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors px-3 py-2 rounded-lg hover:bg-gray-800">
+            <ChevronLeft className="w-5 h-5" /> Back
+          </button>
+          <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium border ${script.platform === 'youtube' ? 'bg-red-500/10 text-red-400 border-red-500/20' : 'bg-gray-800 text-cyan-400 border-gray-700'}`}>
+            {script.platform === 'youtube' ? <Youtube className="w-4 h-4" /> : <Smartphone className="w-4 h-4" />}
+            {script.platform === 'youtube' ? 'YouTube Script' : 'TikTok Script'}
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          {!isNew && (
+            <button onClick={onDelete} className="flex items-center gap-2 text-rose-400 hover:text-rose-300 hover:bg-rose-400/10 px-4 py-2 rounded-lg transition-colors">
+              <Trash2 className="w-4 h-4" /> Delete
+            </button>
+          )}
+          <button onClick={() => setShowTeleprompter(true)} className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors border border-gray-700">
+            <Play className="w-4 h-4" /> Teleprompter
+          </button>
+          <button onClick={saveAndClose} className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-medium transition-all shadow-lg shadow-indigo-500/20">
+            <Save className="w-4 h-4" /> Save Script
+          </button>
+        </div>
+      </div>
+
+      {/* Editor Content */}
+      <div className="px-6 sm:px-12 flex-grow flex flex-col gap-6 relative" ref={editorContainerRef}>
+        
+        {/* Title Input */}
+        <input 
+          type="text" 
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Enter an engaging title..." 
+          className="w-full bg-transparent text-4xl font-bold text-white placeholder-gray-600 focus:outline-none border-none p-0 mb-2" 
+        />
+        
+        {/* Stats Row */}
+        <div className="flex flex-wrap items-center gap-6 py-4 border-y border-gray-800/60 mb-2 text-sm">
+          <div className="flex items-center gap-2 text-gray-400">
+            <FileText className="w-4 h-4" />
+            <span className="font-medium text-gray-300">{wordCount} words</span>
+          </div>
+          <div className="flex items-center gap-2 text-gray-400">
+            <Clock className="w-4 h-4" />
+            <span className="font-medium text-gray-300">{formattedTime}</span>
+          </div>
+          <div className="flex items-center gap-2 text-gray-400 ml-auto" title="Change reading speed in main settings">
+            <Gauge className="w-4 h-4" />
+            <span className="text-xs uppercase tracking-wider font-semibold text-gray-300">Speed: {globalWPM} WPM</span>
+          </div>
+        </div>
+
+        {/* Blocks Container */}
+        <div className="flex flex-col gap-4">
+          {blocks.map((block) => (
+            <div key={block.id} className="block-item bg-[#16191f] border border-gray-800 rounded-xl p-5 flex flex-col gap-3 group focus-within:border-indigo-500/50 transition-colors shadow-sm relative">
+              <div className="flex justify-between items-center border-b border-gray-800 pb-3">
+                <input 
+                  type="text" 
+                  value={block.title}
+                  onChange={(e) => handleTitleChange(block.id, e.target.value)}
+                  placeholder="Block Title (e.g. Hook, Body, CTA)" 
+                  className="bg-transparent text-indigo-300 font-semibold focus:outline-none w-full text-sm uppercase tracking-wider" 
+                />
+                <button onClick={() => removeBlock(block.id)} className="text-gray-500 hover:text-rose-400 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity p-1 rounded hover:bg-rose-400/10" title="Delete Block">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              
+              {/* Rich Text Editor for Block Content */}
+              <div 
+                id={block.id}
+                contentEditable={true}
+                suppressContentEditableWarning={true}
+                onInput={(e) => {
+                  updateStats();
+                  // We only save to React state periodically or on blur to prevent cursor jumping
+                }}
+                onBlur={(e) => handleBlockChange(block.id, e.currentTarget.innerHTML)}
+                className="block-content bg-transparent text-gray-300 leading-relaxed focus:outline-none min-h-[80px]"
+                dangerouslySetInnerHTML={{ __html: block.content }}
+                placeholder={block.content === '' ? 'Select text here to use the floating toolbar...' : ''}
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Add Block Button */}
+        <button onClick={addBlock} className="w-full py-4 mt-2 border-2 border-dashed border-gray-800 hover:border-indigo-500 hover:bg-indigo-500/5 text-gray-500 hover:text-indigo-400 rounded-xl flex items-center justify-center gap-2 transition-all font-medium">
+          <PlusCircle className="w-5 h-5" />
+          Add New Block
+        </button>
+      </div>
+
+      {/* Floating Bubble Toolbar */}
+      {toolbarVisible && (
+        <div 
+          ref={toolbarRef}
+          className="fixed z-50 transform -translate-x-1/2 -translate-y-full flex flex-col items-center pointer-events-auto transition-opacity duration-150"
+          style={{ top: `${position.top}px`, left: `${position.left}px` }}
+        >
+          <div className="bg-gray-800 rounded-xl shadow-2xl shadow-black/50 border border-gray-700 p-1 flex items-center gap-1 relative flex-wrap justify-center w-max max-w-[95vw]">
+            <ToolButton icon={Bold} title="Bold" onClick={(e) => applyFormat(e, 'bold')} />
+            <ToolButton icon={Italic} title="Italic" onClick={(e) => applyFormat(e, 'italic')} />
+            <ToolButton icon={Underline} title="Underline" onClick={(e) => applyFormat(e, 'underline')} />
+            
+            <div className="w-px h-6 bg-gray-700 mx-1"></div>
+            
+            {/* Size Input with Increment/Decrement to preserve focus */}
+            <div className="flex items-center bg-gray-900 rounded-md border border-gray-700 focus-within:border-indigo-500 overflow-hidden">
+                <button onMouseDown={(e) => adjustFontSize(-1, e)} title="Decrease Size" className="text-gray-400 hover:text-white hover:bg-gray-700 px-2 py-1.5 transition-colors font-bold text-sm">-</button>
+                <input 
+                    type="number" 
+                    value={fontSizeInput} 
+                    onChange={(e) => setFontSizeInput(e.target.value)}
+                    className="w-10 bg-transparent text-white text-sm text-center focus:outline-none appearance-none m-0"
+                    style={{ MozAppearance: 'textfield' }}
+                    title="Type Size & Hit Enter"
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            applyFontSizeValue(fontSizeInput, null);
+                        }
+                    }}
+                />
+                <button onMouseDown={(e) => adjustFontSize(1, e)} title="Increase Size" className="text-gray-400 hover:text-white hover:bg-gray-700 px-2 py-1.5 transition-colors font-bold text-sm">+</button>
+            </div>
+
+            <div className="w-px h-6 bg-gray-700 mx-1"></div>
+
+            {/* Font Dropdown */}
+            <div className="relative">
+              <button onMouseDown={(e) => { e.preventDefault(); setShowFonts(!showFonts); setShowElements(false); setShowColors(false); }} className={`flex items-center gap-1.5 px-3 py-2 rounded-md transition-colors text-sm font-medium ${showFonts ? 'bg-indigo-500 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'}`}>
+                <span className="hidden sm:inline">Font</span>
+                <span className="sm:hidden">F</span>
+                <ChevronDown size={14} />
+              </button>
+              {showFonts && (
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-3 w-44 bg-gray-800 border border-gray-700 rounded-lg shadow-xl py-1 z-10 overflow-hidden max-h-48 overflow-y-auto">
+                  {fontFamilies.map(font => (
+                    <button key={font} onMouseDown={(e) => applyFontFamily(e, font)} style={{ fontFamily: font }} className="w-full px-4 py-2 text-left text-sm text-gray-300 hover:bg-gray-700 hover:text-white truncate">
+                      {font}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="w-px h-6 bg-gray-700 mx-1"></div>
+
+            {/* Color */}
+            <div className="relative">
+              <ToolButton icon={Palette} title="Text Color" active={showColors} onClick={(e) => { e.preventDefault(); setShowColors(!showColors); setShowElements(false); setShowFonts(false); }} />
+              {showColors && (
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-3 bg-gray-800 border border-gray-700 p-2 rounded-lg shadow-xl flex gap-1 z-10">
+                  {colors.map(color => (
+                    <button key={color} onMouseDown={(e) => applyFormat(e, 'foreColor', color)} className="w-6 h-6 rounded-full border border-gray-600 hover:scale-110 transition-transform" style={{ backgroundColor: color }} />
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="w-px h-6 bg-gray-700 mx-1"></div>
+
+            {/* Format Element */}
+            <div className="relative">
+              <button onMouseDown={(e) => { e.preventDefault(); setShowElements(!showElements); setShowColors(false); setShowFonts(false); }} className={`flex items-center gap-1.5 px-3 py-2 rounded-md transition-colors text-sm font-medium ${showElements ? 'bg-indigo-500 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'}`}>
+                <span className="hidden sm:inline">Format</span>
+                <span className="sm:hidden">Elem</span>
+                <ChevronDown size={14} />
+              </button>
+              
+              {showElements && (
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-3 w-48 bg-gray-800 border border-gray-700 rounded-lg shadow-xl py-1 z-10 overflow-hidden">
+                  <button onMouseDown={(e) => applyBlockFormat(e, 'H1')} className="w-full px-4 py-2 text-left text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2"><AlignLeft size={14} className="text-gray-500"/> Scene Heading</button>
+                  <button onMouseDown={(e) => applyBlockFormat(e, 'P')} className="w-full px-4 py-2 text-left text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2"><Type size={14} className="text-gray-500"/> Action</button>
+                  <button onMouseDown={(e) => applyBlockFormat(e, 'H2')} className="w-full px-4 py-2 text-left text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2"><User size={14} className="text-gray-500"/> Character</button>
+                  <button onMouseDown={(e) => applyBlockFormat(e, 'BLOCKQUOTE')} className="w-full px-4 py-2 text-left text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2"><Type size={14} className="text-gray-500"/> Dialogue</button>
+                </div>
+              )}
+            </div>
+
+            <div className="w-px h-6 bg-gray-700 mx-1"></div>
+
+            {/* RTL / LTR Direction Toggles */}
+            <ToolButton icon={AlignLeft} title="Left to Right" onClick={(e) => applyDirection(e, 'ltr')} />
+            <ToolButton icon={AlignRight} title="Right to Left" onClick={(e) => applyDirection(e, 'rtl')} />
+          </div>
+          <div className="w-0 h-0 border-l-[8px] border-r-[8px] border-t-[8px] border-l-transparent border-r-transparent border-t-gray-800 relative -top-[1px]"></div>
+        </div>
+      )}
+
+      {/* Teleprompter Modal */}
+      {showTeleprompter && (
+        <div className="fixed inset-0 z-[100] bg-black text-white flex flex-col font-sans">
+          <style>{`
+            /* Force large font size inside teleprompter while safely ignoring editor sizes */
+            .teleprompter-content * {
+              font-size: inherit !important;
+              line-height: 1.5 !important;
+              font-family: inherit !important;
+            }
+          `}</style>
+          
+          {/* Teleprompter Controls */}
+          <div className="flex items-center justify-between p-4 bg-gray-900 border-b border-gray-800 shrink-0">
+            <div className="flex items-center gap-6">
+              <button 
+                onClick={() => setIsPlaying(!isPlaying)} 
+                className={`flex items-center gap-2 px-6 py-3 rounded-full font-bold transition-all ${isPlaying ? 'bg-amber-500 hover:bg-amber-600 text-black shadow-lg shadow-amber-500/20' : 'bg-indigo-500 hover:bg-indigo-600 text-white shadow-lg shadow-indigo-500/20'}`}
+              >
+                {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
+                {isPlaying ? 'Pause' : 'Start Reading'}
+              </button>
+              
+              <div className="flex items-center gap-3 hidden sm:flex">
+                <span className="text-gray-400 text-sm font-medium">Speed</span>
+                <input 
+                  type="range" 
+                  min="1" max="10" 
+                  value={scrollSpeed} 
+                  onChange={(e) => setScrollSpeed(Number(e.target.value))}
+                  className="w-24 md:w-32 accent-indigo-500"
+                />
+              </div>
+
+              <div className="flex items-center gap-3 hidden md:flex">
+                <span className="text-gray-400 text-sm font-medium">Text Size</span>
+                <input 
+                  type="range" 
+                  min="32" max="120" 
+                  value={teleprompterSize} 
+                  onChange={(e) => setTeleprompterSize(Number(e.target.value))}
+                  className="w-24 md:w-32 accent-indigo-500"
+                />
+              </div>
+            </div>
+            
+            <button onClick={() => { setIsPlaying(false); setShowTeleprompter(false); }} className="p-2 text-gray-400 hover:text-white bg-gray-800 hover:bg-gray-700 rounded-full transition-colors flex items-center gap-2 pr-4">
+              <X className="w-5 h-5" />
+              <span className="text-sm font-medium">Exit</span>
+            </button>
+          </div>
+          
+          {/* Teleprompter View */}
+          <div ref={teleprompterRef} className="flex-grow overflow-y-auto px-6 py-12">
+            <div className="max-w-4xl mx-auto pb-[70vh]">
+              {title && <h1 className="text-gray-500 mb-12 uppercase tracking-widest border-b border-gray-800 pb-4" style={{ fontSize: `${teleprompterSize * 0.4}px` }}>{title}</h1>}
+              
+              <div className="flex flex-col gap-12">
+                {blocks.map((block) => (
+                  <div key={block.id} className="teleprompter-block">
+                    {block.title && <h2 className="text-indigo-400 font-bold mb-4 uppercase tracking-widest" style={{ fontSize: `${teleprompterSize * 0.5}px` }}>[{block.title}]</h2>}
+                    <div 
+                      className="teleprompter-content leading-relaxed font-medium"
+                      style={{ fontSize: `${teleprompterSize}px` }}
+                      dangerouslySetInnerHTML={{ __html: block.content || '<span class="text-gray-800">Empty block...</span>' }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
