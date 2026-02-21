@@ -12,7 +12,7 @@
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
     
-    <!-- FIX: The Lucide React UMD build expects the global React object to be lowercase 'react' -->
+    <!-- The Lucide React UMD build expects the global React object to be lowercase 'react' -->
     <script>window.react = window.React;</script>
 
     <!-- Babel for in-browser JSX compilation -->
@@ -69,7 +69,6 @@
   measurementId: "G-NK6VKZ97TC"
         };
 
-        // Automatically uses preview config here, or your config if self-hosted
         const firebaseConfig = typeof window.__firebase_config !== 'undefined' ? JSON.parse(window.__firebase_config) : myFirebaseConfig;
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
@@ -97,9 +96,15 @@
             const [user, setUser] = useState(null);
             const [authLoading, setAuthLoading] = useState(true);
 
-            // Auth Initialization
+            // Auth Initialization with Local Fallback support
             useEffect(() => {
                 const initAuth = async () => {
+                    // Smart fallback: If keys aren't added yet, bypass Firebase errors
+                    if (firebaseConfig.apiKey === "YOUR_API_KEY") {
+                        console.log("Firebase not configured. Safely falling back to local storage.");
+                        setAuthLoading(false);
+                        return;
+                    }
                     try {
                         if (typeof window.__initial_auth_token !== 'undefined' && window.__initial_auth_token) {
                             await signInWithCustomToken(auth, window.__initial_auth_token);
@@ -108,20 +113,39 @@
                         }
                     } catch (err) {
                         console.error("Auth error", err);
+                        setAuthLoading(false);
                     }
                 };
                 initAuth();
-                const unsubscribe = onAuthStateChanged(auth, (u) => {
-                    setUser(u);
-                    setAuthLoading(false);
-                });
-                return () => unsubscribe();
+                
+                if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
+                    const unsubscribe = onAuthStateChanged(auth, (u) => {
+                        setUser(u);
+                        setAuthLoading(false);
+                    });
+                    return () => unsubscribe();
+                }
             }, []);
 
-            // Data Fetching
+            // Data Fetching (Cloud or Local)
             useEffect(() => {
-                if (!user) return;
+                if (!user) {
+                    // Local Storage Fallback Data Load
+                    const savedScripts = localStorage.getItem('scriptflow_data_react');
+                    if (savedScripts) setScripts(JSON.parse(savedScripts));
+                    
+                    const savedWPM = localStorage.getItem('scriptflow_wpm_react');
+                    if (savedWPM) { setGlobalWPM(parseInt(savedWPM, 10)); setSettingsWpmInput(parseInt(savedWPM, 10)); }
+                    
+                    const savedFont = localStorage.getItem('scriptflow_font_react');
+                    if (savedFont) { setDefaultFont(savedFont); setSettingsFontInput(savedFont); }
+                    
+                    const savedFontSize = localStorage.getItem('scriptflow_fontsize_react');
+                    if (savedFontSize) { setDefaultFontSize(parseInt(savedFontSize, 10)); setSettingsFontSizeInput(parseInt(savedFontSize, 10)); }
+                    return;
+                }
 
+                // Cloud Firestore Data Load
                 const scriptsRef = collection(db, 'artifacts', appId, 'users', user.uid, 'scripts');
                 const unsubScripts = onSnapshot(scriptsRef, (snapshot) => {
                     const loadedScripts = [];
@@ -147,8 +171,7 @@
                 };
             }, [user]);
 
-            const handleSaveScript = async (scriptData) => {
-                if (!user) return;
+            const handleSaveScript = async (scriptData, close = true) => {
                 const isExisting = activeScriptId && activeScriptId !== 'new';
                 const scriptId = isExisting ? activeScriptId : Date.now().toString();
                 
@@ -158,18 +181,40 @@
                     createdAt: isExisting ? scripts.find(s => s.id === scriptId)?.createdAt || Date.now() : Date.now()
                 };
 
-                const scriptRef = doc(db, 'artifacts', appId, 'users', user.uid, 'scripts', scriptId);
-                await setDoc(scriptRef, scriptToSave);
+                if (!user) {
+                    // Local Storage Save
+                    let updatedScripts;
+                    if (isExisting) {
+                        updatedScripts = scripts.map(s => s.id === scriptId ? { ...s, ...scriptToSave } : s);
+                    } else {
+                        updatedScripts = [{ id: scriptId, ...scriptToSave }, ...scripts];
+                    }
+                    setScripts(updatedScripts);
+                    localStorage.setItem('scriptflow_data_react', JSON.stringify(updatedScripts));
+                } else {
+                    // Cloud Firestore Save
+                    const scriptRef = doc(db, 'artifacts', appId, 'users', user.uid, 'scripts', scriptId);
+                    await setDoc(scriptRef, scriptToSave);
+                }
                 
-                setCurrentView('dashboard');
-                setActiveScriptId(null);
+                if (close) {
+                    setCurrentView('dashboard');
+                    setActiveScriptId(null);
+                } else {
+                    setActiveScriptId(scriptId); // ensure it is recognized as existing for subsequent saves
+                }
             };
 
             const handleDeleteScript = async (id) => {
-                if (!user) return;
                 if (window.confirm('Are you sure you want to delete this script? This cannot be undone.')) {
-                    const scriptRef = doc(db, 'artifacts', appId, 'users', user.uid, 'scripts', id);
-                    await deleteDoc(scriptRef);
+                    if (!user) {
+                        const updatedScripts = scripts.filter(s => s.id !== id);
+                        setScripts(updatedScripts);
+                        localStorage.setItem('scriptflow_data_react', JSON.stringify(updatedScripts));
+                    } else {
+                        const scriptRef = doc(db, 'artifacts', appId, 'users', user.uid, 'scripts', id);
+                        await deleteDoc(scriptRef);
+                    }
                     setCurrentView('dashboard');
                     setActiveScriptId(null);
                 }
@@ -191,7 +236,13 @@
                 setDefaultFontSize(settingsFontSizeInput);
                 setShowSettingsModal(false);
 
-                if (!user) return;
+                if (!user) {
+                    localStorage.setItem('scriptflow_wpm_react', settingsWpmInput);
+                    localStorage.setItem('scriptflow_font_react', settingsFontInput);
+                    localStorage.setItem('scriptflow_fontsize_react', settingsFontSizeInput);
+                    return;
+                }
+                
                 const settingsRef = doc(db, 'artifacts', appId, 'users', user.uid, 'settings', 'userSettings');
                 await setDoc(settingsRef, {
                     globalWPM: settingsWpmInput,
@@ -220,23 +271,34 @@
 
             const handleImportData = async (event) => {
                 const file = event.target.files[0];
-                if (!file || !user) return;
+                if (!file) return;
 
                 const reader = new FileReader();
                 reader.onload = async (e) => {
                     try {
                         const importedData = JSON.parse(e.target.result);
                         if (importedData.scripts && Array.isArray(importedData.scripts)) {
-                            if (window.confirm('Importing data will overwrite your current scripts in the cloud. Are you sure you want to proceed?')) {
-                                for (const script of importedData.scripts) {
-                                    const scriptRef = doc(db, 'artifacts', appId, 'users', user.uid, 'scripts', script.id);
-                                    await setDoc(scriptRef, script);
+                            if (window.confirm('Importing data will overwrite your current scripts. Are you sure you want to proceed?')) {
+                                
+                                if (!user) {
+                                    setScripts(importedData.scripts);
+                                    localStorage.setItem('scriptflow_data_react', JSON.stringify(importedData.scripts));
+                                    if (importedData.settings) {
+                                        if (importedData.settings.globalWPM) { setGlobalWPM(importedData.settings.globalWPM); setSettingsWpmInput(importedData.settings.globalWPM); localStorage.setItem('scriptflow_wpm_react', importedData.settings.globalWPM); }
+                                        if (importedData.settings.defaultFont) { setDefaultFont(importedData.settings.defaultFont); setSettingsFontInput(importedData.settings.defaultFont); localStorage.setItem('scriptflow_font_react', importedData.settings.defaultFont); }
+                                        if (importedData.settings.defaultFontSize) { setDefaultFontSize(importedData.settings.defaultFontSize); setSettingsFontSizeInput(importedData.settings.defaultFontSize); localStorage.setItem('scriptflow_fontsize_react', importedData.settings.defaultFontSize); }
+                                    }
+                                } else {
+                                    for (const script of importedData.scripts) {
+                                        const scriptRef = doc(db, 'artifacts', appId, 'users', user.uid, 'scripts', script.id);
+                                        await setDoc(scriptRef, script);
+                                    }
+                                    if (importedData.settings) {
+                                        const settingsRef = doc(db, 'artifacts', appId, 'users', user.uid, 'settings', 'userSettings');
+                                        await setDoc(settingsRef, importedData.settings, { merge: true });
+                                    }
                                 }
-                                if (importedData.settings) {
-                                    const settingsRef = doc(db, 'artifacts', appId, 'users', user.uid, 'settings', 'userSettings');
-                                    await setDoc(settingsRef, importedData.settings, { merge: true });
-                                }
-                                alert('Data successfully imported to cloud!');
+                                alert('Data successfully imported!');
                                 setShowSettingsModal(false);
                             }
                         } else {
@@ -260,7 +322,7 @@
                     <div className="min-h-screen flex items-center justify-center bg-[#0f1115] text-[#f3f4f6]">
                         <div className="flex flex-col items-center gap-4">
                             <Clapperboard className="w-10 h-10 text-indigo-500 animate-pulse" />
-                            <h2 className="text-xl font-bold text-gray-400">Loading your Cloud Studio...</h2>
+                            <h2 className="text-xl font-bold text-gray-400">Loading your Studio...</h2>
                         </div>
                     </div>
                 );
@@ -438,6 +500,8 @@
             const [blocks, setBlocks] = useState(script?.blocks && script.blocks.length > 0 ? script.blocks : [{ id: `b-${Date.now()}`, title: 'Hook', content: '' }]);
             const [wordCount, setWordCount] = useState(0);
             const editorContainerRef = useRef(null);
+            
+            const [saveLabel, setSaveLabel] = useState('Save Script');
 
             const [toolbarVisible, setToolbarVisible] = useState(false);
             const [position, setPosition] = useState({ top: 0, left: 0 });
@@ -571,11 +635,21 @@
             const addBlock = () => setBlocks([...blocks, { id: `b-${Date.now()}`, title: '', content: '' }]);
             const removeBlock = (id) => setBlocks(blocks.filter(b => b.id !== id));
 
-            const saveAndClose = () => {
+            const saveScript = (closeEditor = true) => {
                 const finalBlocks = blocks.map(b => { const el = document.getElementById(b.id); return { ...b, content: el ? el.innerHTML : b.content }; });
                 const hasContent = finalBlocks.some(b => b.title.trim() || b.content.trim().replace(/<[^>]*>?/gm, ''));
-                if (!title.trim() && !hasContent && isNew) return onClose();
-                onSave({ title: title.trim(), platform: script.platform, blocks: finalBlocks });
+                
+                if (!title.trim() && !hasContent && isNew) {
+                    if (closeEditor) onClose();
+                    return;
+                }
+                
+                onSave({ title: title.trim(), platform: script.platform, blocks: finalBlocks }, closeEditor);
+                
+                if (!closeEditor) {
+                    setSaveLabel('Saved!');
+                    setTimeout(() => setSaveLabel('Save Script'), 2000);
+                }
             };
 
             const totalSeconds = Math.ceil((wordCount / globalWPM) * 60);
@@ -591,7 +665,7 @@
                 <div className="flex-grow w-full max-w-4xl mx-auto flex flex-col pb-12 overflow-y-auto">
                     <div className="sticky top-0 z-10 glass border-b border-gray-800 px-4 py-4 flex items-center justify-between mb-8">
                         <div className="flex items-center gap-4">
-                            <button onClick={saveAndClose} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors px-3 py-2 rounded-lg hover:bg-gray-800"><ChevronLeft className="w-5 h-5" /> Back</button>
+                            <button onClick={() => saveScript(true)} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors px-3 py-2 rounded-lg hover:bg-gray-800"><ChevronLeft className="w-5 h-5" /> Back</button>
                             <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium border ${script.platform === 'youtube' ? 'bg-red-500/10 text-red-400 border-red-500/20' : 'bg-gray-800 text-cyan-400 border-gray-700'}`}>
                                 {script.platform === 'youtube' ? <Youtube className="w-4 h-4" /> : <Smartphone className="w-4 h-4" />}
                                 {script.platform === 'youtube' ? 'YouTube Script' : 'TikTok Script'}
@@ -600,7 +674,9 @@
                         <div className="flex items-center gap-3">
                             {!isNew && <button onClick={onDelete} className="flex items-center gap-2 text-rose-400 hover:text-rose-300 hover:bg-rose-400/10 px-4 py-2 rounded-lg transition-colors"><Trash2 className="w-4 h-4" /> Delete</button>}
                             <button onClick={() => setShowTeleprompter(true)} className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors border border-gray-700"><Play className="w-4 h-4" /> Teleprompter</button>
-                            <button onClick={saveAndClose} className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-medium transition-all shadow-lg shadow-indigo-500/20"><Save className="w-4 h-4" /> Save Script</button>
+                            <button onClick={() => saveScript(false)} className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-medium transition-all shadow-lg shadow-indigo-500/20">
+                                <Save className="w-4 h-4" /> {saveLabel}
+                            </button>
                         </div>
                     </div>
 
