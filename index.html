@@ -11,11 +11,24 @@ import {
 
 const fontFamilies = ['Arial', 'Courier New', 'Georgia', 'Times New Roman', 'Verdana', 'Inter', 'Comic Sans MS'];
 
-const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+// --- FIREBASE CONFIGURATION ---
+// TO HOST YOURSELF: Replace these values with your actual Firebase project config!
+const myFirebaseConfig = {
+  apiKey: "AIzaSyAI8lKSeVOOvAz817o_TOGpWbxSc927O-U",
+  authDomain: "myscripts-9c5e9.firebaseapp.com",
+  projectId: "myscripts-9c5e9",
+  storageBucket: "myscripts-9c5e9.firebasestorage.app",
+  messagingSenderId: "1003528338865",
+  appId: "1:1003528338865:web:5136bd475f5e0059a55190",
+  measurementId: "G-NK6VKZ97TC"
+};
+
+// Automatically uses preview config here, or your config if self-hosted
+const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : myFirebaseConfig;
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+const appId = typeof __app_id !== 'undefined' ? __app_id : 'scriptflow-self-hosted';
 
 // --- MAIN APP COMPONENT ---
 export default function App() {
@@ -45,6 +58,7 @@ export default function App() {
         if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
           await signInWithCustomToken(auth, __initial_auth_token);
         } else {
+          // If self-hosted, it will fallback to anonymous auth
           await signInAnonymously(auth);
         }
       } catch (err) {
