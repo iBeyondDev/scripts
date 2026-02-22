@@ -564,144 +564,170 @@
             );
 
             return (
-                <div className="flex-grow w-full max-w-4xl mx-auto flex flex-col pb-20 overflow-y-auto relative animate-scale-in">
-                    
-                    {/* Editor Header */}
-                    <div className="sticky top-0 z-30 glass-nav px-2 py-4 flex items-center justify-between mb-8 -mx-4 sm:mx-0 sm:px-6 sm:rounded-b-3xl">
-                        <div className="flex items-center gap-4">
-                            <button onClick={() => saveScriptManual(true)} className="flex items-center gap-1.5 text-zinc-400 hover:text-white transition-colors px-3 py-2 rounded-full hover:bg-white/5 font-medium text-sm">
-                                <ChevronLeft className="w-4 h-4" /> Back
-                            </button>
-                            <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold tracking-wide uppercase border ${isYT ? 'bg-red-500/10 text-red-400 border-red-500/20' : 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20'}`}>
-                                {isYT ? <Youtube className="w-3.5 h-3.5" /> : <Smartphone className="w-3.5 h-3.5" />}
-                                {isYT ? 'YouTube' : 'TikTok'}
+                <>
+                    <div className="flex-grow w-full max-w-4xl mx-auto flex flex-col pb-20 overflow-y-auto relative animate-scale-in">
+                        
+                        {/* Editor Header */}
+                        <div className="sticky top-0 z-30 glass-nav px-2 py-4 flex items-center justify-between mb-8 -mx-4 sm:mx-0 sm:px-6 sm:rounded-b-3xl">
+                            <div className="flex items-center gap-4">
+                                <button onClick={() => saveScriptManual(true)} className="flex items-center gap-1.5 text-zinc-400 hover:text-white transition-colors px-3 py-2 rounded-full hover:bg-white/5 font-medium text-sm">
+                                    <ChevronLeft className="w-4 h-4" /> Back
+                                </button>
+                                <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold tracking-wide uppercase border ${isYT ? 'bg-red-500/10 text-red-400 border-red-500/20' : 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20'}`}>
+                                    {isYT ? <Youtube className="w-3.5 h-3.5" /> : <Smartphone className="w-3.5 h-3.5" />}
+                                    {isYT ? 'YouTube' : 'TikTok'}
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                {lastAutoSave && (
+                                    <div className="hidden sm:flex items-center gap-1.5 text-xs text-zinc-500 font-medium mr-2">
+                                        <Check className="w-3.5 h-3.5" />
+                                        <span>Saved {lastAutoSave.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                                    </div>
+                                )}
+                                <button onClick={() => setShowTeleprompter(true)} className="flex items-center gap-2 bg-white hover:bg-zinc-200 text-zinc-950 px-5 py-2 rounded-full font-bold transition-transform transform hover:scale-105 text-sm shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+                                    <Play className="w-4 h-4 fill-zinc-950" /> Prompter
+                                </button>
                             </div>
                         </div>
-                        <div className="flex items-center gap-3">
-                            {lastAutoSave && (
-                                <div className="hidden sm:flex items-center gap-1.5 text-xs text-zinc-500 font-medium mr-2">
-                                    <Check className="w-3.5 h-3.5" />
-                                    <span>Saved {lastAutoSave.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-                                </div>
-                            )}
-                            <button onClick={() => setShowTeleprompter(true)} className="flex items-center gap-2 bg-white hover:bg-zinc-200 text-zinc-950 px-5 py-2 rounded-full font-bold transition-transform transform hover:scale-105 text-sm shadow-[0_0_15px_rgba(255,255,255,0.1)]">
-                                <Play className="w-4 h-4 fill-zinc-950" /> Prompter
-                            </button>
-                        </div>
-                    </div>
 
-                    <div className="px-6 sm:px-10 flex-grow flex flex-col gap-8 relative" ref={editorContainerRef}>
-                        
-                        {/* Title Input */}
-                        <div className="relative group">
-                            <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Untitled Script" dir="auto" className="w-full bg-transparent text-5xl md:text-6xl font-extrabold text-white placeholder-zinc-800 focus:outline-none border-none p-0 tracking-tight transition-all focus:text-transparent focus:bg-clip-text focus:bg-gradient-to-r focus:from-white focus:to-zinc-400" />
+                        <div className="px-6 sm:px-10 flex-grow flex flex-col gap-8 relative" ref={editorContainerRef}>
+                            
+                            {/* Title Input */}
+                            <div className="relative group">
+                                <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Untitled Script" dir="auto" className="w-full bg-transparent text-5xl md:text-6xl font-extrabold text-white placeholder-zinc-800 focus:outline-none border-none p-0 tracking-tight transition-all focus:text-transparent focus:bg-clip-text focus:bg-gradient-to-r focus:from-white focus:to-zinc-400" />
+                            </div>
+
+                            {/* Meta Stats Row */}
+                            <div className="flex flex-wrap items-center gap-3 text-xs font-semibold">
+                                <div className="flex items-center gap-2 text-zinc-400 bg-zinc-900/50 border border-white/5 px-3 py-1.5 rounded-full"><FileText className="w-3.5 h-3.5 text-violet-400" />{wordCount} words</div>
+                                <div className="flex items-center gap-2 text-zinc-400 bg-zinc-900/50 border border-white/5 px-3 py-1.5 rounded-full"><Clock className="w-3.5 h-3.5 text-violet-400" />{formattedTime} est.</div>
+                                <div className="flex items-center gap-2 text-zinc-500 bg-transparent px-3 py-1.5 rounded-full" title="Change reading speed in main settings"><Gauge className="w-3.5 h-3.5" />{globalWPM} WPM</div>
+                            </div>
+
+                            {/* Blocks Container */}
+                            <div className="flex flex-col gap-6 mt-4">
+                                {blocks.map((block, index) => (
+                                    <div key={block.id} className="relative group/block flex gap-4">
+                                        {/* Minimal Side Handle */}
+                                        <div className="w-6 flex flex-col items-center pt-3 opacity-0 group-hover/block:opacity-100 transition-opacity text-zinc-600">
+                                            <div className="h-6 w-6 flex items-center justify-center"><span className="text-xs font-bold">{index + 1}</span></div>
+                                        </div>
+                                        
+                                        <div className="flex-grow bg-zinc-900/30 border border-white/5 rounded-3xl p-6 flex flex-col gap-3 focus-within:bg-zinc-900/60 focus-within:border-violet-500/40 transition-all duration-300 shadow-sm relative overflow-hidden group/inner">
+                                            {/* Subtle Focus Glow */}
+                                            <div className="absolute top-0 left-0 w-1 h-full bg-violet-500 opacity-0 group-focus-within/inner:opacity-100 transition-opacity"></div>
+                                            
+                                            <div className="flex justify-between items-center mb-1">
+                                                <input type="text" value={block.title} onChange={(e) => handleTitleChange(block.id, e.target.value)} placeholder="SECTION (e.g. Hook)" dir="auto" className="bg-transparent text-violet-400 font-bold focus:outline-none w-full text-xs uppercase tracking-widest placeholder-zinc-700" />
+                                                {blocks.length > 1 && (
+                                                    <button onClick={() => removeBlock(block.id)} className="text-zinc-600 hover:text-rose-400 opacity-0 group-hover/inner:opacity-100 focus-within:opacity-100 transition-opacity p-1.5 rounded-lg hover:bg-rose-400/10" title="Delete Block"><Trash2 className="w-4 h-4" /></button>
+                                                )}
+                                            </div>
+                                            <div id={block.id} contentEditable={true} suppressContentEditableWarning={true} onInput={updateStats} onBlur={(e) => handleBlockChange(block.id, e.currentTarget.innerHTML)} dir="auto" className="block-content bg-transparent text-zinc-200 leading-relaxed focus:outline-none min-h-[60px]" dangerouslySetInnerHTML={{ __html: block.content }} placeholder={block.content === '' ? 'Select text to style...' : ''} />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            
+                            {/* Add Block Button */}
+                            <div className="ml-10">
+                                <button onClick={addBlock} className="w-full py-5 border border-dashed border-white/10 hover:border-violet-500/50 bg-transparent hover:bg-violet-500/5 text-zinc-500 hover:text-violet-400 rounded-3xl flex items-center justify-center gap-2 transition-all font-semibold"><Plus className="w-5 h-5" /> Add Section</button>
+                            </div>
                         </div>
 
-                        {/* Meta Stats Row */}
-                        <div className="flex flex-wrap items-center gap-3 text-xs font-semibold">
-                            <div className="flex items-center gap-2 text-zinc-400 bg-zinc-900/50 border border-white/5 px-3 py-1.5 rounded-full"><FileText className="w-3.5 h-3.5 text-violet-400" />{wordCount} words</div>
-                            <div className="flex items-center gap-2 text-zinc-400 bg-zinc-900/50 border border-white/5 px-3 py-1.5 rounded-full"><Clock className="w-3.5 h-3.5 text-violet-400" />{formattedTime} est.</div>
-                            <div className="flex items-center gap-2 text-zinc-500 bg-transparent px-3 py-1.5 rounded-full" title="Change reading speed in main settings"><Gauge className="w-3.5 h-3.5" />{globalWPM} WPM</div>
-                        </div>
-
-                        {/* Blocks Container */}
-                        <div className="flex flex-col gap-6 mt-4">
-                            {blocks.map((block, index) => (
-                                <div key={block.id} className="relative group/block flex gap-4">
-                                    {/* Minimal Side Handle */}
-                                    <div className="w-6 flex flex-col items-center pt-3 opacity-0 group-hover/block:opacity-100 transition-opacity text-zinc-600">
-                                        <div className="h-6 w-6 flex items-center justify-center"><span className="text-xs font-bold">{index + 1}</span></div>
+                        {/* Floating Formatter Toolbar */}
+                        {toolbarVisible && (
+                            <div ref={toolbarRef} className="fixed z-50 transform -translate-x-1/2 -translate-y-[120%] flex flex-col items-center pointer-events-auto transition-all duration-200 animate-scale-in" style={{ top: `${position.top}px`, left: `${position.left}px` }}>
+                                <div className="bg-zinc-800/95 backdrop-blur-xl rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.5)] border border-white/10 p-1.5 flex items-center gap-1 relative flex-wrap justify-center w-max max-w-[90vw]">
+                                    <ToolButton icon={Bold} title="Bold" onClick={(e) => applyFormat(e, 'bold')} />
+                                    <ToolButton icon={Italic} title="Italic" onClick={(e) => applyFormat(e, 'italic')} />
+                                    <ToolButton icon={Underline} title="Underline" onClick={(e) => applyFormat(e, 'underline')} />
+                                    <div className="w-px h-5 bg-white/10 mx-1"></div>
+                                    
+                                    {/* Font Size */}
+                                    <div className="flex items-center bg-zinc-900/50 rounded-lg border border-transparent focus-within:border-violet-500/50 overflow-hidden">
+                                        <button onMouseDown={(e) => adjustFontSize(-1, e)} className="text-zinc-400 hover:text-white hover:bg-zinc-700 px-2.5 py-1.5 transition-colors font-bold text-sm">-</button>
+                                        <input type="number" value={fontSizeInput} onChange={(e) => setFontSizeInput(e.target.value)} className="w-9 bg-transparent text-white text-sm font-medium text-center focus:outline-none appearance-none m-0" style={{ MozAppearance: 'textfield' }} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); applyFontSizeValue(fontSizeInput, null); } }} />
+                                        <button onMouseDown={(e) => adjustFontSize(1, e)} className="text-zinc-400 hover:text-white hover:bg-zinc-700 px-2.5 py-1.5 transition-colors font-bold text-sm">+</button>
                                     </div>
                                     
-                                    <div className="flex-grow bg-zinc-900/30 border border-white/5 rounded-3xl p-6 flex flex-col gap-3 focus-within:bg-zinc-900/60 focus-within:border-violet-500/40 transition-all duration-300 shadow-sm relative overflow-hidden group/inner">
-                                        {/* Subtle Focus Glow */}
-                                        <div className="absolute top-0 left-0 w-1 h-full bg-violet-500 opacity-0 group-focus-within/inner:opacity-100 transition-opacity"></div>
-                                        
-                                        <div className="flex justify-between items-center mb-1">
-                                            <input type="text" value={block.title} onChange={(e) => handleTitleChange(block.id, e.target.value)} placeholder="SECTION (e.g. Hook)" dir="auto" className="bg-transparent text-violet-400 font-bold focus:outline-none w-full text-xs uppercase tracking-widest placeholder-zinc-700" />
-                                            {blocks.length > 1 && (
-                                                <button onClick={() => removeBlock(block.id)} className="text-zinc-600 hover:text-rose-400 opacity-0 group-hover/inner:opacity-100 focus-within:opacity-100 transition-opacity p-1.5 rounded-lg hover:bg-rose-400/10" title="Delete Block"><Trash2 className="w-4 h-4" /></button>
-                                            )}
-                                        </div>
-                                        <div id={block.id} contentEditable={true} suppressContentEditableWarning={true} onInput={updateStats} onBlur={(e) => handleBlockChange(block.id, e.currentTarget.innerHTML)} dir="auto" className="block-content bg-transparent text-zinc-200 leading-relaxed focus:outline-none min-h-[60px]" dangerouslySetInnerHTML={{ __html: block.content }} placeholder={block.content === '' ? 'Select text to style...' : ''} />
+                                    <div className="w-px h-5 bg-white/10 mx-1"></div>
+                                    
+                                    {/* Font Family */}
+                                    <div className="relative">
+                                        <button onMouseDown={(e) => { e.preventDefault(); setShowFonts(!showFonts); setShowElements(false); setShowColors(false); }} className={`flex items-center gap-1 px-3 py-1.5 rounded-lg transition-colors text-sm font-semibold ${showFonts ? 'bg-violet-500/20 text-violet-300' : 'text-zinc-300 hover:bg-zinc-700/50 hover:text-white'}`}><span className="hidden sm:inline">Font</span><span className="sm:hidden">F</span><ChevronDown size={14} /></button>
+                                        {showFonts && (
+                                            <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-3 w-44 bg-zinc-800 border border-white/10 rounded-xl shadow-2xl py-1 z-10 overflow-hidden max-h-48 overflow-y-auto">
+                                                {fontFamilies.map(font => <button key={font} onMouseDown={(e) => applyFontFamily(e, font)} style={{ fontFamily: font }} className="w-full px-4 py-2 text-left text-sm text-zinc-300 hover:bg-zinc-700 hover:text-white truncate transition-colors">{font}</button>)}
+                                            </div>
+                                        )}
                                     </div>
+
+                                    <div className="w-px h-5 bg-white/10 mx-1"></div>
+                                    
+                                    {/* Color Picker */}
+                                    <div className="relative">
+                                        <ToolButton icon={Palette} title="Text Color" active={showColors} onClick={(e) => { e.preventDefault(); setShowColors(!showColors); setShowElements(false); setShowFonts(false); }} />
+                                        {showColors && (
+                                            <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-3 bg-zinc-800 border border-white/10 p-2.5 rounded-xl shadow-2xl flex gap-2 z-10">
+                                                {colors.map(color => <button key={color} onMouseDown={(e) => applyFormat(e, 'foreColor', color)} className="w-6 h-6 rounded-full border border-white/20 hover:scale-125 transition-transform" style={{ backgroundColor: color }} />)}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className="w-px h-5 bg-white/10 mx-1"></div>
+                                    
+                                    {/* Formats */}
+                                    <div className="relative">
+                                        <button onMouseDown={(e) => { e.preventDefault(); setShowElements(!showElements); setShowColors(false); setShowFonts(false); }} className={`flex items-center gap-1 px-3 py-1.5 rounded-lg transition-colors text-sm font-semibold ${showElements ? 'bg-violet-500/20 text-violet-300' : 'text-zinc-300 hover:bg-zinc-700/50 hover:text-white'}`}><span className="hidden sm:inline">Type</span><span className="sm:hidden">T</span><ChevronDown size={14} /></button>
+                                        {showElements && (
+                                            <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-3 w-48 bg-zinc-800 border border-white/10 rounded-xl shadow-2xl py-1 z-10 overflow-hidden">
+                                                <button onMouseDown={(e) => applyBlockFormat(e, 'H1')} className="w-full px-4 py-2.5 text-left text-sm font-bold text-white hover:bg-zinc-700 flex items-center gap-2 transition-colors"><AlignLeft size={14} className="text-zinc-500"/> Header</button>
+                                                <button onMouseDown={(e) => applyBlockFormat(e, 'P')} className="w-full px-4 py-2.5 text-left text-sm font-normal text-zinc-300 hover:bg-zinc-700 flex items-center gap-2 transition-colors"><Type size={14} className="text-zinc-500"/> Paragraph</button>
+                                                <button onMouseDown={(e) => applyBlockFormat(e, 'H2')} className="w-full px-4 py-2.5 text-left text-sm font-semibold text-zinc-400 hover:bg-zinc-700 flex items-center gap-2 transition-colors uppercase tracking-widest"><User size={14} className="text-zinc-500"/> Character</button>
+                                                <button onMouseDown={(e) => applyBlockFormat(e, 'BLOCKQUOTE')} className="w-full px-4 py-2.5 text-left text-sm italic text-violet-300 hover:bg-zinc-700 flex items-center gap-2 transition-colors"><Type size={14} className="text-zinc-500"/> Dialogue</button>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className="w-px h-5 bg-white/10 mx-1"></div>
+                                    <ToolButton icon={AlignLeft} title="Left to Right" onClick={(e) => applyDirection(e, 'ltr')} />
+                                    <ToolButton icon={AlignRight} title="Right to Left" onClick={(e) => applyDirection(e, 'rtl')} />
                                 </div>
-                            ))}
-                        </div>
-                        
-                        {/* Add Block Button */}
-                        <div className="ml-10">
-                            <button onClick={addBlock} className="w-full py-5 border border-dashed border-white/10 hover:border-violet-500/50 bg-transparent hover:bg-violet-500/5 text-zinc-500 hover:text-violet-400 rounded-3xl flex items-center justify-center gap-2 transition-all font-semibold"><Plus className="w-5 h-5" /> Add Section</button>
-                        </div>
+                                <div className="w-0 h-0 border-l-[6px] border-r-[6px] border-t-[6px] border-l-transparent border-r-transparent border-t-zinc-800/95 relative -top-[1px]"></div>
+                            </div>
+                        )}
                     </div>
 
-                    {/* Floating Formatter Toolbar */}
-                    {toolbarVisible && (
-                        <div ref={toolbarRef} className="fixed z-50 transform -translate-x-1/2 -translate-y-[120%] flex flex-col items-center pointer-events-auto transition-all duration-200 animate-scale-in" style={{ top: `${position.top}px`, left: `${position.left}px` }}>
-                            <div className="bg-zinc-800/95 backdrop-blur-xl rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.5)] border border-white/10 p-1.5 flex items-center gap-1 relative flex-wrap justify-center w-max max-w-[90vw]">
-                                <ToolButton icon={Bold} title="Bold" onClick={(e) => applyFormat(e, 'bold')} />
-                                <ToolButton icon={Italic} title="Italic" onClick={(e) => applyFormat(e, 'italic')} />
-                                <ToolButton icon={Underline} title="Underline" onClick={(e) => applyFormat(e, 'underline')} />
-                                <div className="w-px h-5 bg-white/10 mx-1"></div>
-                                
-                                {/* Font Size */}
-                                <div className="flex items-center bg-zinc-900/50 rounded-lg border border-transparent focus-within:border-violet-500/50 overflow-hidden">
-                                    <button onMouseDown={(e) => adjustFontSize(-1, e)} className="text-zinc-400 hover:text-white hover:bg-zinc-700 px-2.5 py-1.5 transition-colors font-bold text-sm">-</button>
-                                    <input type="number" value={fontSizeInput} onChange={(e) => setFontSizeInput(e.target.value)} className="w-9 bg-transparent text-white text-sm font-medium text-center focus:outline-none appearance-none m-0" style={{ MozAppearance: 'textfield' }} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); applyFontSizeValue(fontSizeInput, null); } }} />
-                                    <button onMouseDown={(e) => adjustFontSize(1, e)} className="text-zinc-400 hover:text-white hover:bg-zinc-700 px-2.5 py-1.5 transition-colors font-bold text-sm">+</button>
-                                </div>
-                                
-                                <div className="w-px h-5 bg-white/10 mx-1"></div>
-                                
-                                {/* Font Family */}
-                                <div className="relative">
-                                    <button onMouseDown={(e) => { e.preventDefault(); setShowFonts(!showFonts); setShowElements(false); setShowColors(false); }} className={`flex items-center gap-1 px-3 py-1.5 rounded-lg transition-colors text-sm font-semibold ${showFonts ? 'bg-violet-500/20 text-violet-300' : 'text-zinc-300 hover:bg-zinc-700/50 hover:text-white'}`}><span className="hidden sm:inline">Font</span><span className="sm:hidden">F</span><ChevronDown size={14} /></button>
-                                    {showFonts && (
-                                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-3 w-44 bg-zinc-800 border border-white/10 rounded-xl shadow-2xl py-1 z-10 overflow-hidden max-h-48 overflow-y-auto">
-                                            {fontFamilies.map(font => <button key={font} onMouseDown={(e) => applyFontFamily(e, font)} style={{ fontFamily: font }} className="w-full px-4 py-2 text-left text-sm text-zinc-300 hover:bg-zinc-700 hover:text-white truncate transition-colors">{font}</button>)}
-                                        </div>
-                                    )}
-                                </div>
-
-                                <div className="w-px h-5 bg-white/10 mx-1"></div>
-                                
-                                {/* Color Picker */}
-                                <div className="relative">
-                                    <ToolButton icon={Palette} title="Text Color" active={showColors} onClick={(e) => { e.preventDefault(); setShowColors(!showColors); setShowElements(false); setShowFonts(false); }} />
-                                    {showColors && (
-                                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-3 bg-zinc-800 border border-white/10 p-2.5 rounded-xl shadow-2xl flex gap-2 z-10">
-                                            {colors.map(color => <button key={color} onMouseDown={(e) => applyFormat(e, 'foreColor', color)} className="w-6 h-6 rounded-full border border-white/20 hover:scale-125 transition-transform" style={{ backgroundColor: color }} />)}
-                                        </div>
-                                    )}
-                                </div>
-
-                                <div className="w-px h-5 bg-white/10 mx-1"></div>
-                                
-                                {/* Formats */}
-                                <div className="relative">
-                                    <button onMouseDown={(e) => { e.preventDefault(); setShowElements(!showElements); setShowColors(false); setShowFonts(false); }} className={`flex items-center gap-1 px-3 py-1.5 rounded-lg transition-colors text-sm font-semibold ${showElements ? 'bg-violet-500/20 text-violet-300' : 'text-zinc-300 hover:bg-zinc-700/50 hover:text-white'}`}><span className="hidden sm:inline">Type</span><span className="sm:hidden">T</span><ChevronDown size={14} /></button>
-                                    {showElements && (
-                                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-3 w-48 bg-zinc-800 border border-white/10 rounded-xl shadow-2xl py-1 z-10 overflow-hidden">
-                                            <button onMouseDown={(e) => applyBlockFormat(e, 'H1')} className="w-full px-4 py-2.5 text-left text-sm font-bold text-white hover:bg-zinc-700 flex items-center gap-2 transition-colors"><AlignLeft size={14} className="text-zinc-500"/> Header</button>
-                                            <button onMouseDown={(e) => applyBlockFormat(e, 'P')} className="w-full px-4 py-2.5 text-left text-sm font-normal text-zinc-300 hover:bg-zinc-700 flex items-center gap-2 transition-colors"><Type size={14} className="text-zinc-500"/> Paragraph</button>
-                                            <button onMouseDown={(e) => applyBlockFormat(e, 'H2')} className="w-full px-4 py-2.5 text-left text-sm font-semibold text-zinc-400 hover:bg-zinc-700 flex items-center gap-2 transition-colors uppercase tracking-widest"><User size={14} className="text-zinc-500"/> Character</button>
-                                            <button onMouseDown={(e) => applyBlockFormat(e, 'BLOCKQUOTE')} className="w-full px-4 py-2.5 text-left text-sm italic text-violet-300 hover:bg-zinc-700 flex items-center gap-2 transition-colors"><Type size={14} className="text-zinc-500"/> Dialogue</button>
-                                        </div>
-                                    )}
-                                </div>
-
-                                <div className="w-px h-5 bg-white/10 mx-1"></div>
-                                <ToolButton icon={AlignLeft} title="Left to Right" onClick={(e) => applyDirection(e, 'ltr')} />
-                                <ToolButton icon={AlignRight} title="Right to Left" onClick={(e) => applyDirection(e, 'rtl')} />
-                            </div>
-                            <div className="w-0 h-0 border-l-[6px] border-r-[6px] border-t-[6px] border-l-transparent border-r-transparent border-t-zinc-800/95 relative -top-[1px]"></div>
-                        </div>
-                    )}
-
-                    {/* Teleprompter Fullscreen Mode */}
+                    {/* Teleprompter Fullscreen Mode - Moved outside of the transformed container */}
                     {showTeleprompter && (
-                        <div className="fixed inset-0 z-[100] bg-black text-white flex flex-col font-sans animate-scale-in origin-center">
-                            <style>{` .teleprompter-content * { font-size: inherit !important; line-height: 1.6 !important; font-family: inherit !important; color: white !important; } `}</style>
+                        <div className="fixed inset-0 z-[100] bg-black text-white flex flex-col font-sans animate-scale-in origin-center overflow-hidden">
+                            <style>{`
+                                .teleprompter-content p, 
+                                .teleprompter-content div, 
+                                .teleprompter-content blockquote,
+                                .teleprompter-content h1,
+                                .teleprompter-content h2 {
+                                    width: 100% !important;
+                                    max-width: none !important;
+                                    margin-left: 0 !important;
+                                    margin-right: 0 !important;
+                                    padding-left: 0 !important;
+                                    padding-right: 0 !important;
+                                    border: none !important;
+                                    background: transparent !important;
+                                    text-align: left !important;
+                                }
+                                .teleprompter-content * { 
+                                    font-size: inherit !important; 
+                                    line-height: 1.5 !important; 
+                                    font-family: inherit !important; 
+                                    color: white !important; 
+                                    white-space: pre-wrap !important;
+                                    word-break: break-word !important;
+                                } 
+                            `}</style>
                             <div className="flex items-center justify-between p-4 bg-zinc-950/80 backdrop-blur-md border-b border-white/10 shrink-0 sticky top-0 z-10">
                                 <div className="flex items-center gap-4 sm:gap-8">
                                     <button onClick={() => setIsPlaying(!isPlaying)} className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-bold transition-all transform hover:scale-105 ${isPlaying ? 'bg-amber-500 hover:bg-amber-400 text-black shadow-[0_0_20px_rgba(245,158,11,0.3)]' : 'bg-white hover:bg-zinc-200 text-black shadow-[0_0_20px_rgba(255,255,255,0.2)]'}`}>
@@ -713,15 +739,15 @@
                                 <button onClick={() => { setIsPlaying(false); setShowTeleprompter(false); }} className="p-2.5 text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 rounded-full transition-colors flex items-center gap-2 border border-white/5"><X className="w-5 h-5" /></button>
                             </div>
                             
-                            <div ref={teleprompterRef} className="flex-grow overflow-y-auto px-6 py-12 scroll-smooth" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                            <div ref={teleprompterRef} className="flex-grow overflow-y-auto px-6 md:px-12 py-12 scroll-smooth w-full" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                                 <style>{`::-webkit-scrollbar { display: none; }`}</style>
-                                <div className="w-[90%] max-w-[1200px] mx-auto pb-[70vh]">
-                                    {title && <h1 className="text-zinc-500 mb-16 uppercase tracking-widest border-b border-white/10 pb-6 font-extrabold" dir="auto" style={{ fontSize: `${teleprompterSize * 0.4}px` }}>{title}</h1>}
-                                    <div className="flex flex-col gap-16">
+                                <div className="w-full max-w-none pb-[70vh]">
+                                    {title && <h1 className="text-zinc-500 mb-16 uppercase tracking-widest border-b border-white/10 pb-6 font-extrabold w-full" dir="auto" style={{ fontSize: `${teleprompterSize * 0.4}px` }}>{title}</h1>}
+                                    <div className="flex flex-col gap-16 w-full">
                                         {blocks.map((block) => (
-                                            <div key={block.id} className="teleprompter-block">
-                                                {block.title && <h2 className="text-violet-400 font-extrabold mb-6 uppercase tracking-widest" dir="auto" style={{ fontSize: `${teleprompterSize * 0.5}px` }}>[{block.title}]</h2>}
-                                                <div className="teleprompter-content leading-relaxed font-semibold opacity-90" dir="auto" style={{ fontSize: `${teleprompterSize}px` }} dangerouslySetInnerHTML={{ __html: block.content || '<span class="text-zinc-800">...</span>' }} />
+                                            <div key={block.id} className="teleprompter-block w-full">
+                                                {block.title && <h2 className="text-violet-400 font-extrabold mb-6 uppercase tracking-widest w-full" dir="auto" style={{ fontSize: `${teleprompterSize * 0.5}px` }}>[{block.title}]</h2>}
+                                                <div className="teleprompter-content leading-relaxed font-semibold opacity-90 w-full" dir="auto" style={{ fontSize: `${teleprompterSize}px` }} dangerouslySetInnerHTML={{ __html: block.content || '<span class="text-zinc-800">...</span>' }} />
                                             </div>
                                         ))}
                                     </div>
@@ -729,7 +755,7 @@
                             </div>
                         </div>
                     )}
-                </div>
+                </>
             );
         }
 
