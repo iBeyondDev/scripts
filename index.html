@@ -140,6 +140,12 @@
                 }
             };
 
+            const handleToggleDone = (id) => {
+                const updatedScripts = scripts.map(s => s.id === id ? { ...s, done: !s.done, updatedAt: Date.now() } : s);
+                setScripts(updatedScripts);
+                localStorage.setItem('scriptflow_data_react', JSON.stringify(updatedScripts));
+            };
+
             const openEditor = (id = null, platform = 'youtube') => {
                 setActiveScriptId(id);
                 if (!id) {
@@ -235,7 +241,7 @@
                     </header>
 
                     {currentView === 'dashboard' ? (
-                        <Dashboard scripts={scripts} filter={filter} setFilter={setFilter} openEditor={openEditor} openPlatformModal={() => setShowPlatformModal(true)} onDelete={handleDeleteScript} />
+                        <Dashboard scripts={scripts} filter={filter} setFilter={setFilter} openEditor={openEditor} openPlatformModal={() => setShowPlatformModal(true)} onDelete={handleDeleteScript} onToggleDone={handleToggleDone} />
                     ) : (
                         <Editor script={activeScript} isNew={activeScriptId === 'new'} globalWPM={globalWPM} defaultFontSize={defaultFontSize} onSave={handleSaveScript} onClose={() => setCurrentView('dashboard')} onDelete={() => handleDeleteScript(activeScriptId)} />
                     )}
@@ -315,8 +321,13 @@
         }
 
         // --- DASHBOARD COMPONENT ---
-        function Dashboard({ scripts, filter, setFilter, openEditor, openPlatformModal, onDelete }) {
-            const filteredScripts = filter === 'all' ? scripts : scripts.filter(s => s.platform === filter);
+        function Dashboard({ scripts, filter, setFilter, openEditor, openPlatformModal, onDelete, onToggleDone }) {
+            const filteredScripts = scripts.filter(s => {
+                if (filter === 'finished') return s.done;
+                if (s.done) return false;
+                if (filter === 'all') return true;
+                return s.platform === filter;
+            });
             const sortedScripts = [...filteredScripts].sort((a, b) => b.updatedAt - a.updatedAt);
 
             return (
@@ -332,6 +343,9 @@
                             </button>
                             <button onClick={() => setFilter('tiktok')} className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 flex items-center gap-2 ${filter === 'tiktok' ? 'bg-zinc-800 text-white shadow-md' : 'text-zinc-500 hover:text-zinc-200'}`}>
                                 <Smartphone className={`w-4 h-4 ${filter === 'tiktok' ? 'text-cyan-400' : ''}`} /> TikTok
+                            </button>
+                            <button onClick={() => setFilter('finished')} className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 flex items-center gap-2 ${filter === 'finished' ? 'bg-zinc-800 text-white shadow-md' : 'text-zinc-500 hover:text-zinc-200'}`}>
+                                <CheckCircle2 className={`w-4 h-4 ${filter === 'finished' ? 'text-green-500' : ''}`} /> Finished
                             </button>
                         </div>
                     </div>
@@ -355,6 +369,9 @@
                                             </div>
                                             <div className="flex items-center gap-2">
                                                 <span className="text-[11px] font-medium text-zinc-500 uppercase tracking-wider">{date}</span>
+                                                <button onClick={(e) => { e.stopPropagation(); onToggleDone(script.id); }} className={`p-1.5 rounded-lg transition-colors ${script.done ? 'bg-green-500/10 text-green-500' : 'text-zinc-600 hover:text-green-400 hover:bg-green-400/10'}`} title={script.done ? "Mark as Active" : "Mark as Finished"}>
+                                                    <CheckCircle2 className="w-4 h-4" />
+                                                </button>
                                                 <button onClick={(e) => { e.stopPropagation(); onDelete(script.id); }} className="text-zinc-600 hover:text-rose-400 transition-colors p-1.5 rounded-lg hover:bg-rose-400/10" title="Delete Script">
                                                     <Trash2 className="w-4 h-4" />
                                                 </button>
