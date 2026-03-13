@@ -551,7 +551,7 @@
                     const contentDivs = editorContainerRef.current.querySelectorAll('.block-content');
                     let text = '';
                     contentDivs.forEach(div => text += div.innerText + ' ');
-                    setWordCount(text.split(/\s+/).filter(w => w.length > 0).length);
+                    setWordCount(text.split(/\s+/).filter(w => w.replace(/[.؟!،,;\-]/g, '').trim().length > 0).length);
                 }
             };
 
