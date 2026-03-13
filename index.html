@@ -1,215 +1,404 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ScriptFlow | Creator Studio</title>
-    
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- React & ReactDOM -->
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-    
+    <script
+      src="https://unpkg.com/react@18/umd/react.production.min.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"
+      crossorigin
+    ></script>
+
     <!-- The Lucide React UMD build expects the global React object to be lowercase 'react' -->
-    <script>window.react = window.React;</script>
+    <script>
+      window.react = window.React;
+    </script>
 
     <!-- Babel for in-browser JSX compilation -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
+
     <!-- Lucide React Icons UMD -->
     <script src="https://unpkg.com/lucide-react@0.344.0/dist/umd/lucide-react.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-        
-        :root {
-            --bg-base: #09090b; /* zinc-950 */
-            --accent-glow: rgba(139, 92, 246, 0.15);
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+
+      :root {
+        --bg-base: #09090b; /* zinc-950 */
+        --accent-glow: rgba(139, 92, 246, 0.15);
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--bg-base);
+        color: #fafafa;
+        background-image:
+          radial-gradient(
+            circle at 15% 50%,
+            rgba(139, 92, 246, 0.05),
+            transparent 25%
+          ),
+          radial-gradient(
+            circle at 85% 30%,
+            rgba(56, 189, 248, 0.05),
+            transparent 25%
+          );
+        background-attachment: fixed;
+        background-size: cover;
+      }
+
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #27272a;
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #3f3f46;
+      }
+
+      /* Smooth React Render & Animations */
+      #root {
+        animation: fadeIn 0.4s ease-out;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
         }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-base);
-            color: #fafafa;
-            background-image: 
-                radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.05), transparent 25%),
-                radial-gradient(circle at 85% 30%, rgba(56, 189, 248, 0.05), transparent 25%);
-            background-attachment: fixed;
-            background-size: cover;
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
+      }
+      @keyframes scaleIn {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
-
-        /* Smooth React Render & Animations */
-        #root { animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        
-        .animate-scale-in { animation: scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+      .animate-scale-in {
+        animation: scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div id="root"></div>
 
     <!-- Main React App Script -->
     <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
-        const { 
-            Clapperboard, Plus, LayoutGrid, Youtube, Smartphone, FileEdit, 
-            ArrowRight, ChevronLeft, Trash2, Save, PlusCircle, Settings, X, 
-            FileText, Clock, Gauge, Bold, Italic, Underline, Palette, ChevronDown, 
-            Type, AlignLeft, User, AlignRight, Download, Upload, Play, Pause, CheckCircle2,
-            Sparkles, GripVertical, Check
-        } = window.LucideReact;
+      const { useState, useEffect, useRef } = React;
+      const {
+        Clapperboard,
+        Plus,
+        LayoutGrid,
+        Youtube,
+        Smartphone,
+        FileEdit,
+        ArrowRight,
+        ChevronLeft,
+        Trash2,
+        RotateCcw,
+        Save,
+        PlusCircle,
+        Settings,
+        X,
+        FileText,
+        Clock,
+        Gauge,
+        Bold,
+        Italic,
+        Underline,
+        Palette,
+        ChevronDown,
+        Type,
+        AlignLeft,
+        User,
+        AlignRight,
+        Download,
+        Upload,
+        Play,
+        Pause,
+        CheckCircle2,
+        Sparkles,
+        GripVertical,
+        Check,
+      } = window.LucideReact;
 
-        const fontFamilies = ['Arial', 'Courier New', 'Georgia', 'Times New Roman', 'Verdana', 'Inter', 'Comic Sans MS'];
+      const fontFamilies = [
+        "Arial",
+        "Courier New",
+        "Georgia",
+        "Times New Roman",
+        "Verdana",
+        "Inter",
+        "Comic Sans MS",
+      ];
 
-        function App() {
-            const [scripts, setScripts] = useState([]);
-            const [globalWPM, setGlobalWPM] = useState(150);
-            const [defaultFont, setDefaultFont] = useState('Inter');
-            const [defaultFontSize, setDefaultFontSize] = useState(18);
-            const [currentView, setCurrentView] = useState('dashboard');
-            const [activeScriptId, setActiveScriptId] = useState(null);
-            
-            const [filter, setFilter] = useState('all');
-            const [showPlatformModal, setShowPlatformModal] = useState(false);
-            const [showSettingsModal, setShowSettingsModal] = useState(false);
-            
-            const [settingsWpmInput, setSettingsWpmInput] = useState(150);
-            const [settingsFontInput, setSettingsFontInput] = useState('Inter');
-            const [settingsFontSizeInput, setSettingsFontSizeInput] = useState(18);
-            const fileInputRef = useRef(null);
+      function App() {
+        const [scripts, setScripts] = useState([]);
+        const [globalWPM, setGlobalWPM] = useState(150);
+        const [defaultFont, setDefaultFont] = useState("Inter");
+        const [defaultFontSize, setDefaultFontSize] = useState(18);
+        const [currentView, setCurrentView] = useState("dashboard");
+        const [activeScriptId, setActiveScriptId] = useState(null);
 
-            // Initial Data Fetching
-            useEffect(() => {
-                const savedScripts = localStorage.getItem('scriptflow_data_react');
-                if (savedScripts) setScripts(JSON.parse(savedScripts));
-                
-                const savedWPM = localStorage.getItem('scriptflow_wpm_react');
-                if (savedWPM) { setGlobalWPM(parseInt(savedWPM, 10)); setSettingsWpmInput(parseInt(savedWPM, 10)); }
-                
-                const savedFont = localStorage.getItem('scriptflow_font_react');
-                if (savedFont) { setDefaultFont(savedFont); setSettingsFontInput(savedFont); }
-                
-                const savedFontSize = localStorage.getItem('scriptflow_fontsize_react');
-                if (savedFontSize) { setDefaultFontSize(parseInt(savedFontSize, 10)); setSettingsFontSizeInput(parseInt(savedFontSize, 10)); }
-            }, []);
+        const [filter, setFilter] = useState("all");
+        const [showPlatformModal, setShowPlatformModal] = useState(false);
+        const [showSettingsModal, setShowSettingsModal] = useState(false);
 
-            const handleSaveScript = (scriptData, close = true) => {
-                const isExisting = activeScriptId && activeScriptId !== 'new';
-                const scriptId = isExisting ? activeScriptId : Date.now().toString();
-                
-                const scriptToSave = {
-                    ...scriptData,
-                    updatedAt: Date.now(),
-                    createdAt: isExisting ? scripts.find(s => s.id === scriptId)?.createdAt || Date.now() : Date.now()
-                };
+        const [settingsWpmInput, setSettingsWpmInput] = useState(150);
+        const [settingsFontInput, setSettingsFontInput] = useState("Inter");
+        const [settingsFontSizeInput, setSettingsFontSizeInput] = useState(18);
+        const fileInputRef = useRef(null);
 
-                let updatedScripts;
-                if (isExisting) {
-                    updatedScripts = scripts.map(s => s.id === scriptId ? { ...s, ...scriptToSave } : s);
-                } else {
-                    updatedScripts = [{ id: scriptId, ...scriptToSave }, ...scripts];
+        // Initial Data Fetching
+        useEffect(() => {
+          const savedScripts = localStorage.getItem("scriptflow_data_react");
+          if (savedScripts) setScripts(JSON.parse(savedScripts));
+
+          const savedWPM = localStorage.getItem("scriptflow_wpm_react");
+          if (savedWPM) {
+            setGlobalWPM(parseInt(savedWPM, 10));
+            setSettingsWpmInput(parseInt(savedWPM, 10));
+          }
+
+          const savedFont = localStorage.getItem("scriptflow_font_react");
+          if (savedFont) {
+            setDefaultFont(savedFont);
+            setSettingsFontInput(savedFont);
+          }
+
+          const savedFontSize = localStorage.getItem(
+            "scriptflow_fontsize_react",
+          );
+          if (savedFontSize) {
+            setDefaultFontSize(parseInt(savedFontSize, 10));
+            setSettingsFontSizeInput(parseInt(savedFontSize, 10));
+          }
+        }, []);
+
+        const handleSaveScript = (scriptData, close = true) => {
+          const isExisting = activeScriptId && activeScriptId !== "new";
+          const scriptId = isExisting ? activeScriptId : Date.now().toString();
+
+          const scriptToSave = {
+            ...scriptData,
+            updatedAt: Date.now(),
+            createdAt: isExisting
+              ? scripts.find((s) => s.id === scriptId)?.createdAt || Date.now()
+              : Date.now(),
+          };
+
+          let updatedScripts;
+          if (isExisting) {
+            updatedScripts = scripts.map((s) =>
+              s.id === scriptId ? { ...s, ...scriptToSave } : s,
+            );
+          } else {
+            updatedScripts = [{ id: scriptId, ...scriptToSave }, ...scripts];
+          }
+
+          setScripts(updatedScripts);
+          localStorage.setItem(
+            "scriptflow_data_react",
+            JSON.stringify(updatedScripts),
+          );
+
+          if (close) {
+            setCurrentView("dashboard");
+            setActiveScriptId(null);
+          } else if (!isExisting) {
+            setActiveScriptId(scriptId);
+          }
+        };
+
+        const handleDeleteScript = (id) => {
+          const script = scripts.find((s) => s.id === id);
+          if (script && script.inTrash) {
+            if (
+              window.confirm(
+                "Are you sure you want to delete this script permanently? This cannot be undone.",
+              )
+            ) {
+              const updatedScripts = scripts.filter((s) => s.id !== id);
+              setScripts(updatedScripts);
+              localStorage.setItem(
+                "scriptflow_data_react",
+                JSON.stringify(updatedScripts),
+              );
+              setCurrentView("dashboard");
+              setActiveScriptId(null);
+            }
+          } else {
+            const updatedScripts = scripts.map((s) =>
+              s.id === id ? { ...s, inTrash: true, updatedAt: Date.now() } : s,
+            );
+            setScripts(updatedScripts);
+            localStorage.setItem(
+              "scriptflow_data_react",
+              JSON.stringify(updatedScripts),
+            );
+            setCurrentView("dashboard");
+            setActiveScriptId(null);
+          }
+        };
+
+        const handleRestoreScript = (id) => {
+          const updatedScripts = scripts.map((s) =>
+            s.id === id ? { ...s, inTrash: false, updatedAt: Date.now() } : s,
+          );
+          setScripts(updatedScripts);
+          localStorage.setItem(
+            "scriptflow_data_react",
+            JSON.stringify(updatedScripts),
+          );
+        };
+
+        const handleToggleDone = (id) => {
+          const updatedScripts = scripts.map((s) =>
+            s.id === id ? { ...s, done: !s.done, updatedAt: Date.now() } : s,
+          );
+          setScripts(updatedScripts);
+          localStorage.setItem(
+            "scriptflow_data_react",
+            JSON.stringify(updatedScripts),
+          );
+        };
+
+        const openEditor = (id = null, platform = "youtube") => {
+          setActiveScriptId(id);
+          if (!id) {
+            setActiveScriptId("new");
+            window.__tempPlatform = platform;
+          }
+          setCurrentView("editor");
+          setShowPlatformModal(false);
+        };
+
+        const saveSettings = () => {
+          setGlobalWPM(settingsWpmInput);
+          setDefaultFont(settingsFontInput);
+          setDefaultFontSize(settingsFontSizeInput);
+          setShowSettingsModal(false);
+          localStorage.setItem("scriptflow_wpm_react", settingsWpmInput);
+          localStorage.setItem("scriptflow_font_react", settingsFontInput);
+          localStorage.setItem(
+            "scriptflow_fontsize_react",
+            settingsFontSizeInput,
+          );
+        };
+
+        const handleExportData = () => {
+          const dataToExport = {
+            scripts,
+            settings: { globalWPM, defaultFont, defaultFontSize },
+            exportDate: new Date().toISOString(),
+          };
+          const blob = new Blob([JSON.stringify(dataToExport, null, 2)], {
+            type: "application/json",
+          });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = url;
+          link.download = `scriptflow_backup_${new Date().toISOString().split("T")[0]}.json`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+        };
+
+        const handleImportData = async (event) => {
+          const file = event.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = async (e) => {
+            try {
+              const importedData = JSON.parse(e.target.result);
+              if (importedData.scripts && Array.isArray(importedData.scripts)) {
+                if (
+                  window.confirm(
+                    "Importing data will overwrite current scripts. Proceed?",
+                  )
+                ) {
+                  setScripts(importedData.scripts);
+                  localStorage.setItem(
+                    "scriptflow_data_react",
+                    JSON.stringify(importedData.scripts),
+                  );
+                  if (importedData.settings) {
+                    if (importedData.settings.globalWPM) {
+                      setGlobalWPM(importedData.settings.globalWPM);
+                      setSettingsWpmInput(importedData.settings.globalWPM);
+                      localStorage.setItem(
+                        "scriptflow_wpm_react",
+                        importedData.settings.globalWPM,
+                      );
+                    }
+                    if (importedData.settings.defaultFont) {
+                      setDefaultFont(importedData.settings.defaultFont);
+                      setSettingsFontInput(importedData.settings.defaultFont);
+                      localStorage.setItem(
+                        "scriptflow_font_react",
+                        importedData.settings.defaultFont,
+                      );
+                    }
+                    if (importedData.settings.defaultFontSize) {
+                      setDefaultFontSize(importedData.settings.defaultFontSize);
+                      setSettingsFontSizeInput(
+                        importedData.settings.defaultFontSize,
+                      );
+                      localStorage.setItem(
+                        "scriptflow_fontsize_react",
+                        importedData.settings.defaultFontSize,
+                      );
+                    }
+                  }
+                  setShowSettingsModal(false);
                 }
-                
-                setScripts(updatedScripts);
-                localStorage.setItem('scriptflow_data_react', JSON.stringify(updatedScripts));
-                
-                if (close) {
-                    setCurrentView('dashboard');
-                    setActiveScriptId(null);
-                } else if (!isExisting) {
-                    setActiveScriptId(scriptId);
-                }
-            };
+              }
+            } catch (error) {
+              alert("Invalid backup file format.");
+            }
+          };
+          reader.readAsText(file);
+          event.target.value = "";
+        };
 
-            const handleDeleteScript = (id) => {
-                if (window.confirm('Are you sure you want to delete this script? This cannot be undone.')) {
-                    const updatedScripts = scripts.filter(s => s.id !== id);
-                    setScripts(updatedScripts);
-                    localStorage.setItem('scriptflow_data_react', JSON.stringify(updatedScripts));
-                    setCurrentView('dashboard');
-                    setActiveScriptId(null);
-                }
-            };
+        const activeScript =
+          activeScriptId === "new"
+            ? {
+                title: "",
+                platform: window.__tempPlatform,
+                blocks: [{ id: "b1", title: "Hook", content: "" }],
+              }
+            : scripts.find((s) => s.id === activeScriptId);
 
-            const handleToggleDone = (id) => {
-                const updatedScripts = scripts.map(s => s.id === id ? { ...s, done: !s.done, updatedAt: Date.now() } : s);
-                setScripts(updatedScripts);
-                localStorage.setItem('scriptflow_data_react', JSON.stringify(updatedScripts));
-            };
-
-            const openEditor = (id = null, platform = 'youtube') => {
-                setActiveScriptId(id);
-                if (!id) {
-                    setActiveScriptId('new');
-                    window.__tempPlatform = platform;
-                }
-                setCurrentView('editor');
-                setShowPlatformModal(false);
-            };
-
-            const saveSettings = () => {
-                setGlobalWPM(settingsWpmInput);
-                setDefaultFont(settingsFontInput);
-                setDefaultFontSize(settingsFontSizeInput);
-                setShowSettingsModal(false);
-                localStorage.setItem('scriptflow_wpm_react', settingsWpmInput);
-                localStorage.setItem('scriptflow_font_react', settingsFontInput);
-                localStorage.setItem('scriptflow_fontsize_react', settingsFontSizeInput);
-            };
-
-            const handleExportData = () => {
-                const dataToExport = { scripts, settings: { globalWPM, defaultFont, defaultFontSize }, exportDate: new Date().toISOString() };
-                const blob = new Blob([JSON.stringify(dataToExport, null, 2)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = url; link.download = `scriptflow_backup_${new Date().toISOString().split('T')[0]}.json`;
-                document.body.appendChild(link); link.click(); document.body.removeChild(link); URL.revokeObjectURL(url);
-            };
-
-            const handleImportData = async (event) => {
-                const file = event.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = async (e) => {
-                    try {
-                        const importedData = JSON.parse(e.target.result);
-                        if (importedData.scripts && Array.isArray(importedData.scripts)) {
-                            if (window.confirm('Importing data will overwrite current scripts. Proceed?')) {
-                                setScripts(importedData.scripts);
-                                localStorage.setItem('scriptflow_data_react', JSON.stringify(importedData.scripts));
-                                if (importedData.settings) {
-                                    if (importedData.settings.globalWPM) { setGlobalWPM(importedData.settings.globalWPM); setSettingsWpmInput(importedData.settings.globalWPM); localStorage.setItem('scriptflow_wpm_react', importedData.settings.globalWPM); }
-                                    if (importedData.settings.defaultFont) { setDefaultFont(importedData.settings.defaultFont); setSettingsFontInput(importedData.settings.defaultFont); localStorage.setItem('scriptflow_font_react', importedData.settings.defaultFont); }
-                                    if (importedData.settings.defaultFontSize) { setDefaultFontSize(importedData.settings.defaultFontSize); setSettingsFontSizeInput(importedData.settings.defaultFontSize); localStorage.setItem('scriptflow_fontsize_react', importedData.settings.defaultFontSize); }
-                                }
-                                setShowSettingsModal(false);
-                            }
-                        }
-                    } catch (error) { alert('Invalid backup file format.'); }
-                };
-                reader.readAsText(file);
-                event.target.value = '';
-            };
-
-            const activeScript = activeScriptId === 'new' 
-                ? { title: '', platform: window.__tempPlatform, blocks: [{ id: 'b1', title: 'Hook', content: '' }] }
-                : scripts.find(s => s.id === activeScriptId);
-
-            return (
-                <div className="min-h-screen flex flex-col antialiased selection:bg-violet-500/30 selection:text-violet-200">
-                    <style>{`
+        return (
+          <div className="min-h-screen flex flex-col antialiased selection:bg-violet-500/30 selection:text-violet-200">
+            <style>{`
                         .glass-nav { background: rgba(9, 9, 11, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
                         .glass-panel { background: rgba(24, 24, 27, 0.6); backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
-                        .block-content { font-family: ${defaultFont === 'Inter' ? "'Inter', sans-serif" : `"${defaultFont}", sans-serif`}; font-size: ${defaultFontSize}px; outline: none; }
+                        .block-content { font-family: ${defaultFont === "Inter" ? "'Inter', sans-serif" : `"${defaultFont}", sans-serif`}; font-size: ${defaultFontSize}px; outline: none; }
                         .block-content h1 { font-weight: 800; text-transform: uppercase; margin-top: 1em; margin-bottom: 0.5em; color: #fff; font-size: 1.25em; letter-spacing: 0.05em; }
                         .block-content h2 { text-transform: uppercase; margin-top: 1em; margin-bottom: 0.5em; text-align: center; width: 60%; margin-left: auto; margin-right: auto; color: #a1a1aa; font-size: 1.1em; letter-spacing: 0.1em; }
                         .block-content blockquote { text-align: left; width: 85%; margin: 1.5em auto; font-size: 1.05em; font-style: italic; border-left: 3px solid #8b5cf6; padding-left: 1.5rem; color: #d4d4d8; background: linear-gradient(90deg, rgba(139,92,246,0.08) 0%, transparent 100%); padding-top: 0.75rem; padding-bottom: 0.75rem; border-radius: 0 12px 12px 0; }
@@ -217,510 +406,1173 @@
                         input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
                     `}</style>
 
-                    {/* Navigation Bar */}
-                    <header className="glass-nav sticky top-0 z-40">
-                        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-                            <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setCurrentView('dashboard')}>
-                                <div className="p-2 bg-gradient-to-br from-violet-600 to-fuchsia-600 rounded-xl shadow-lg shadow-violet-500/20 group-hover:scale-105 transition-transform duration-300">
-                                    <Clapperboard className="w-5 h-5 text-white" />
-                                </div>
-                                <h1 className="text-xl font-extrabold tracking-tight text-white flex items-center gap-1">
-                                    Script<span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-400">Flow</span>
-                                </h1>
-                                <span className="ml-3 text-[10px] font-bold tracking-widest uppercase bg-zinc-800/80 text-zinc-400 px-2.5 py-1 rounded-full border border-white/5">Local</span>
-                            </div>
-                            <div className="flex items-center gap-4">
-                                <button onClick={() => { setSettingsWpmInput(globalWPM); setSettingsFontInput(defaultFont); setSettingsFontSizeInput(defaultFontSize); setShowSettingsModal(true); }} className="p-2.5 text-zinc-400 hover:text-white transition-all rounded-full hover:bg-white/10" title="Workspace Settings">
-                                    <Settings className="w-5 h-5" />
-                                </button>
-                                <button onClick={() => setShowPlatformModal(true)} className="flex items-center gap-2 bg-white text-zinc-950 hover:bg-zinc-200 px-5 py-2.5 rounded-full font-bold transition-all transform hover:scale-105 active:scale-95 text-sm shadow-[0_0_20px_rgba(255,255,255,0.15)]">
-                                    <Plus className="w-4 h-4" /><span>New Script</span>
-                                </button>
-                            </div>
-                        </div>
-                    </header>
-
-                    {currentView === 'dashboard' ? (
-                        <Dashboard scripts={scripts} filter={filter} setFilter={setFilter} openEditor={openEditor} openPlatformModal={() => setShowPlatformModal(true)} onDelete={handleDeleteScript} onToggleDone={handleToggleDone} />
-                    ) : (
-                        <Editor script={activeScript} isNew={activeScriptId === 'new'} globalWPM={globalWPM} defaultFontSize={defaultFontSize} onSave={handleSaveScript} onClose={() => setCurrentView('dashboard')} onDelete={() => handleDeleteScript(activeScriptId)} />
-                    )}
-
-                    {/* Platform Selection Modal */}
-                    {showPlatformModal && (
-                        <div className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
-                            <div className="glass-panel w-full max-w-md rounded-3xl p-8 animate-scale-in">
-                                <div className="flex justify-between items-center mb-8">
-                                    <div>
-                                        <h3 className="text-2xl font-bold text-white tracking-tight">Create New</h3>
-                                        <p className="text-sm text-zinc-400 mt-1">Select your target platform</p>
-                                    </div>
-                                    <button onClick={() => setShowPlatformModal(false)} className="p-2 rounded-full hover:bg-white/10 text-zinc-400 hover:text-white transition-colors bg-zinc-900/50"><X className="w-5 h-5" /></button>
-                                </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <button onClick={() => openEditor(null, 'youtube')} className="relative group flex flex-col items-center justify-center gap-4 p-8 rounded-2xl bg-zinc-900/40 border border-white/5 hover:border-red-500/40 transition-all overflow-hidden">
-                                        <div className="absolute inset-0 bg-gradient-to-b from-red-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                                        <Youtube className="w-12 h-12 text-zinc-500 group-hover:text-red-500 transition-colors relative z-10 transform group-hover:scale-110 duration-300" />
-                                        <span className="font-semibold text-zinc-300 group-hover:text-white relative z-10">YouTube</span>
-                                    </button>
-                                    <button onClick={() => openEditor(null, 'tiktok')} className="relative group flex flex-col items-center justify-center gap-4 p-8 rounded-2xl bg-zinc-900/40 border border-white/5 hover:border-cyan-400/40 transition-all overflow-hidden">
-                                        <div className="absolute inset-0 bg-gradient-to-b from-cyan-400/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                                        <Smartphone className="w-12 h-12 text-zinc-500 group-hover:text-cyan-400 transition-colors relative z-10 transform group-hover:scale-110 duration-300" />
-                                        <span className="font-semibold text-zinc-300 group-hover:text-white relative z-10">TikTok</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Settings Modal */}
-                    {showSettingsModal && (
-                        <div className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
-                            <div className="glass-panel w-full max-w-sm rounded-3xl p-8 animate-scale-in">
-                                <div className="flex justify-between items-center mb-8">
-                                    <h3 className="text-xl font-bold text-white tracking-tight">Workspace</h3>
-                                    <button onClick={() => setShowSettingsModal(false)} className="text-zinc-400 hover:text-white transition-colors p-2 rounded-full hover:bg-white/10 bg-zinc-900/50"><X className="w-5 h-5" /></button>
-                                </div>
-                                <div className="flex flex-col gap-6">
-                                    <div className="group">
-                                        <label className="block text-sm font-semibold text-zinc-300 mb-2 flex items-center gap-2"><Gauge className="w-4 h-4 text-violet-400"/> Reading Speed (WPM)</label>
-                                        <input type="number" min="50" max="500" value={settingsWpmInput} onChange={(e) => setSettingsWpmInput(e.target.value)} className="w-full bg-zinc-900/80 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-violet-500 transition-all focus:ring-1 focus:ring-violet-500/50" />
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div>
-                                            <label className="block text-sm font-semibold text-zinc-300 mb-2">Default Font</label>
-                                            <div className="relative">
-                                                <select value={settingsFontInput} onChange={(e) => setSettingsFontInput(e.target.value)} className="w-full bg-zinc-900/80 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-violet-500 transition-all appearance-none">
-                                                    {fontFamilies.map(f => <option key={f} value={f}>{f}</option>)}
-                                                </select>
-                                                <ChevronDown className="w-4 h-4 absolute right-4 top-1/2 transform -translate-y-1/2 text-zinc-500 pointer-events-none" />
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-semibold text-zinc-300 mb-2">Size (px)</label>
-                                            <input type="number" min="10" max="72" value={settingsFontSizeInput} onChange={(e) => setSettingsFontSizeInput(e.target.value)} className="w-full bg-zinc-900/80 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-violet-500 transition-all focus:ring-1 focus:ring-violet-500/50" />
-                                        </div>
-                                    </div>
-
-                                    <button onClick={saveSettings} className="w-full bg-white text-black hover:bg-zinc-200 py-3 rounded-xl font-bold transition-colors mt-2">Apply Settings</button>
-
-                                    <div className="border-t border-white/10 pt-6 mt-2">
-                                        <label className="block text-sm font-semibold text-zinc-400 mb-3">Local Data Management</label>
-                                        <div className="grid grid-cols-2 gap-3">
-                                            <button onClick={handleExportData} className="flex items-center justify-center gap-2 bg-zinc-800/50 hover:bg-zinc-800 text-zinc-300 hover:text-white px-4 py-2.5 rounded-xl text-sm transition-colors border border-white/5"><Download className="w-4 h-4" /> Backup</button>
-                                            <button onClick={() => fileInputRef.current?.click()} className="flex items-center justify-center gap-2 bg-zinc-800/50 hover:bg-zinc-800 text-zinc-300 hover:text-white px-4 py-2.5 rounded-xl text-sm transition-colors border border-white/5"><Upload className="w-4 h-4" /> Restore</button>
-                                            <input type="file" accept=".json" ref={fileInputRef} onChange={handleImportData} className="hidden" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
+            {/* Navigation Bar */}
+            <header className="glass-nav sticky top-0 z-40">
+              <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+                <div
+                  className="flex items-center gap-3 cursor-pointer group"
+                  onClick={() => setCurrentView("dashboard")}
+                >
+                  <div className="p-2 bg-gradient-to-br from-violet-600 to-fuchsia-600 rounded-xl shadow-lg shadow-violet-500/20 group-hover:scale-105 transition-transform duration-300">
+                    <Clapperboard className="w-5 h-5 text-white" />
+                  </div>
+                  <h1 className="text-xl font-extrabold tracking-tight text-white flex items-center gap-1">
+                    Script
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-400">
+                      Flow
+                    </span>
+                  </h1>
+                  <span className="ml-3 text-[10px] font-bold tracking-widest uppercase bg-zinc-800/80 text-zinc-400 px-2.5 py-1 rounded-full border border-white/5">
+                    Local
+                  </span>
                 </div>
-            );
-        }
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={() => {
+                      setSettingsWpmInput(globalWPM);
+                      setSettingsFontInput(defaultFont);
+                      setSettingsFontSizeInput(defaultFontSize);
+                      setShowSettingsModal(true);
+                    }}
+                    className="p-2.5 text-zinc-400 hover:text-white transition-all rounded-full hover:bg-white/10"
+                    title="Workspace Settings"
+                  >
+                    <Settings className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={() => setShowPlatformModal(true)}
+                    className="flex items-center gap-2 bg-white text-zinc-950 hover:bg-zinc-200 px-5 py-2.5 rounded-full font-bold transition-all transform hover:scale-105 active:scale-95 text-sm shadow-[0_0_20px_rgba(255,255,255,0.15)]"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>New Script</span>
+                  </button>
+                </div>
+              </div>
+            </header>
 
-        // --- DASHBOARD COMPONENT ---
-        function Dashboard({ scripts, filter, setFilter, openEditor, openPlatformModal, onDelete, onToggleDone }) {
-            const filteredScripts = scripts.filter(s => {
-                if (filter === 'finished') return s.done;
-                if (s.done) return false;
-                if (filter === 'all') return true;
-                return s.platform === filter;
+            {currentView === "dashboard" ? (
+              <Dashboard
+                scripts={scripts}
+                filter={filter}
+                setFilter={setFilter}
+                openEditor={openEditor}
+                openPlatformModal={() => setShowPlatformModal(true)}
+                onDelete={handleDeleteScript}
+                onRestore={handleRestoreScript}
+                onToggleDone={handleToggleDone}
+              />
+            ) : (
+              <Editor
+                script={activeScript}
+                isNew={activeScriptId === "new"}
+                globalWPM={globalWPM}
+                defaultFontSize={defaultFontSize}
+                onSave={handleSaveScript}
+                onClose={() => setCurrentView("dashboard")}
+                onDelete={() => handleDeleteScript(activeScriptId)}
+              />
+            )}
+
+            {/* Platform Selection Modal */}
+            {showPlatformModal && (
+              <div className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
+                <div className="glass-panel w-full max-w-md rounded-3xl p-8 animate-scale-in">
+                  <div className="flex justify-between items-center mb-8">
+                    <div>
+                      <h3 className="text-2xl font-bold text-white tracking-tight">
+                        Create New
+                      </h3>
+                      <p className="text-sm text-zinc-400 mt-1">
+                        Select your target platform
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => setShowPlatformModal(false)}
+                      className="p-2 rounded-full hover:bg-white/10 text-zinc-400 hover:text-white transition-colors bg-zinc-900/50"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <button
+                      onClick={() => openEditor(null, "youtube")}
+                      className="relative group flex flex-col items-center justify-center gap-4 p-8 rounded-2xl bg-zinc-900/40 border border-white/5 hover:border-red-500/40 transition-all overflow-hidden"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-b from-red-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                      <Youtube className="w-12 h-12 text-zinc-500 group-hover:text-red-500 transition-colors relative z-10 transform group-hover:scale-110 duration-300" />
+                      <span className="font-semibold text-zinc-300 group-hover:text-white relative z-10">
+                        YouTube
+                      </span>
+                    </button>
+                    <button
+                      onClick={() => openEditor(null, "tiktok")}
+                      className="relative group flex flex-col items-center justify-center gap-4 p-8 rounded-2xl bg-zinc-900/40 border border-white/5 hover:border-cyan-400/40 transition-all overflow-hidden"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-b from-cyan-400/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                      <Smartphone className="w-12 h-12 text-zinc-500 group-hover:text-cyan-400 transition-colors relative z-10 transform group-hover:scale-110 duration-300" />
+                      <span className="font-semibold text-zinc-300 group-hover:text-white relative z-10">
+                        TikTok
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Settings Modal */}
+            {showSettingsModal && (
+              <div className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
+                <div className="glass-panel w-full max-w-sm rounded-3xl p-8 animate-scale-in">
+                  <div className="flex justify-between items-center mb-8">
+                    <h3 className="text-xl font-bold text-white tracking-tight">
+                      Workspace
+                    </h3>
+                    <button
+                      onClick={() => setShowSettingsModal(false)}
+                      className="text-zinc-400 hover:text-white transition-colors p-2 rounded-full hover:bg-white/10 bg-zinc-900/50"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+                  <div className="flex flex-col gap-6">
+                    <div className="group">
+                      <label className="block text-sm font-semibold text-zinc-300 mb-2 flex items-center gap-2">
+                        <Gauge className="w-4 h-4 text-violet-400" /> Reading
+                        Speed (WPM)
+                      </label>
+                      <input
+                        type="number"
+                        min="50"
+                        max="500"
+                        value={settingsWpmInput}
+                        onChange={(e) => setSettingsWpmInput(e.target.value)}
+                        className="w-full bg-zinc-900/80 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-violet-500 transition-all focus:ring-1 focus:ring-violet-500/50"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-semibold text-zinc-300 mb-2">
+                          Default Font
+                        </label>
+                        <div className="relative">
+                          <select
+                            value={settingsFontInput}
+                            onChange={(e) =>
+                              setSettingsFontInput(e.target.value)
+                            }
+                            className="w-full bg-zinc-900/80 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-violet-500 transition-all appearance-none"
+                          >
+                            {fontFamilies.map((f) => (
+                              <option key={f} value={f}>
+                                {f}
+                              </option>
+                            ))}
+                          </select>
+                          <ChevronDown className="w-4 h-4 absolute right-4 top-1/2 transform -translate-y-1/2 text-zinc-500 pointer-events-none" />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-zinc-300 mb-2">
+                          Size (px)
+                        </label>
+                        <input
+                          type="number"
+                          min="10"
+                          max="72"
+                          value={settingsFontSizeInput}
+                          onChange={(e) =>
+                            setSettingsFontSizeInput(e.target.value)
+                          }
+                          className="w-full bg-zinc-900/80 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-violet-500 transition-all focus:ring-1 focus:ring-violet-500/50"
+                        />
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={saveSettings}
+                      className="w-full bg-white text-black hover:bg-zinc-200 py-3 rounded-xl font-bold transition-colors mt-2"
+                    >
+                      Apply Settings
+                    </button>
+
+                    <div className="border-t border-white/10 pt-6 mt-2">
+                      <label className="block text-sm font-semibold text-zinc-400 mb-3">
+                        Local Data Management
+                      </label>
+                      <div className="grid grid-cols-2 gap-3">
+                        <button
+                          onClick={handleExportData}
+                          className="flex items-center justify-center gap-2 bg-zinc-800/50 hover:bg-zinc-800 text-zinc-300 hover:text-white px-4 py-2.5 rounded-xl text-sm transition-colors border border-white/5"
+                        >
+                          <Download className="w-4 h-4" /> Backup
+                        </button>
+                        <button
+                          onClick={() => fileInputRef.current?.click()}
+                          className="flex items-center justify-center gap-2 bg-zinc-800/50 hover:bg-zinc-800 text-zinc-300 hover:text-white px-4 py-2.5 rounded-xl text-sm transition-colors border border-white/5"
+                        >
+                          <Upload className="w-4 h-4" /> Restore
+                        </button>
+                        <input
+                          type="file"
+                          accept=".json"
+                          ref={fileInputRef}
+                          onChange={handleImportData}
+                          className="hidden"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      // --- DASHBOARD COMPONENT ---
+      function Dashboard({
+        scripts,
+        filter,
+        setFilter,
+        openEditor,
+        openPlatformModal,
+        onDelete,
+        onRestore,
+        onToggleDone,
+      }) {
+        const filteredScripts = scripts.filter((s) => {
+          if (filter === "trash") return s.inTrash;
+          if (s.inTrash) return false;
+          if (filter === "finished") return s.done;
+          if (s.done) return false;
+          if (filter === "all") return true;
+          return s.platform === filter;
+        });
+        const sortedScripts = [...filteredScripts].sort(
+          (a, b) => b.updatedAt - a.updatedAt,
+        );
+
+        return (
+          <main className="flex-grow w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            {/* Modern Pill Filter */}
+            <div className="flex justify-center mb-12">
+              <div className="inline-flex p-1.5 bg-zinc-900/60 backdrop-blur-md rounded-full border border-white/5 shadow-xl">
+                <button
+                  onClick={() => setFilter("all")}
+                  className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 flex items-center gap-2 ${filter === "all" ? "bg-zinc-800 text-white shadow-md" : "text-zinc-500 hover:text-zinc-200"}`}
+                >
+                  <LayoutGrid className="w-4 h-4" /> All
+                </button>
+                <button
+                  onClick={() => setFilter("youtube")}
+                  className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 flex items-center gap-2 ${filter === "youtube" ? "bg-zinc-800 text-white shadow-md" : "text-zinc-500 hover:text-zinc-200"}`}
+                >
+                  <Youtube
+                    className={`w-4 h-4 ${filter === "youtube" ? "text-red-500" : ""}`}
+                  />{" "}
+                  YouTube
+                </button>
+                <button
+                  onClick={() => setFilter("tiktok")}
+                  className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 flex items-center gap-2 ${filter === "tiktok" ? "bg-zinc-800 text-white shadow-md" : "text-zinc-500 hover:text-zinc-200"}`}
+                >
+                  <Smartphone
+                    className={`w-4 h-4 ${filter === "tiktok" ? "text-cyan-400" : ""}`}
+                  />{" "}
+                  TikTok
+                </button>
+                <button
+                  onClick={() => setFilter("finished")}
+                  className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 flex items-center gap-2 ${filter === "finished" ? "bg-zinc-800 text-white shadow-md" : "text-zinc-500 hover:text-zinc-200"}`}
+                >
+                  <CheckCircle2
+                    className={`w-4 h-4 ${filter === "finished" ? "text-green-500" : ""}`}
+                  />{" "}
+                  Finished
+                </button>
+                <button
+                  onClick={() => setFilter("trash")}
+                  className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 flex items-center gap-2 ${filter === "trash" ? "bg-zinc-800 text-white shadow-md" : "text-zinc-500 hover:text-zinc-200"}`}
+                >
+                  <Trash2
+                    className={`w-4 h-4 ${filter === "trash" ? "text-rose-500" : ""}`}
+                  />{" "}
+                  Trash
+                </button>
+              </div>
+            </div>
+
+            {sortedScripts.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {sortedScripts.map((script) => {
+                  const date = new Date(script.updatedAt).toLocaleDateString(
+                    "en-US",
+                    { month: "short", day: "numeric" },
+                  );
+                  const snippetText = script.blocks
+                    ? script.blocks
+                        .map((b) => b.content.replace(/<[^>]+>/g, ""))
+                        .join(" ")
+                    : "Empty script...";
+                  const snippet =
+                    snippetText.length > 100
+                      ? snippetText.substring(0, 100) + "..."
+                      : snippetText;
+                  const isYT = script.platform === "youtube";
+
+                  return (
+                    <div
+                      key={script.id}
+                      onClick={() => openEditor(script.id)}
+                      className="group relative p-6 rounded-3xl bg-zinc-900/40 border border-white/5 hover:border-white/10 transition-all duration-300 overflow-hidden flex flex-col h-64 cursor-pointer hover:-translate-y-1 shadow-lg hover:shadow-2xl"
+                    >
+                      {/* Ambient Glow on Hover */}
+                      <div
+                        className={`absolute inset-0 bg-gradient-to-br ${isYT ? "from-red-500/5" : "from-cyan-400/5"} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
+                      ></div>
+
+                      <div className="relative z-10 flex justify-between items-start mb-5">
+                        <div
+                          className={`p-2 rounded-xl border ${isYT ? "bg-red-500/10 border-red-500/20 text-red-400" : "bg-cyan-500/10 border-cyan-500/20 text-cyan-400"}`}
+                        >
+                          {isYT ? (
+                            <Youtube className="w-5 h-5" />
+                          ) : (
+                            <Smartphone className="w-5 h-5" />
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[11px] font-medium text-zinc-500 uppercase tracking-wider">
+                            {date}
+                          </span>
+                          {script.inTrash ? (
+                            <>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onRestore(script.id);
+                                }}
+                                className="text-zinc-600 hover:text-violet-400 transition-colors p-1.5 rounded-lg hover:bg-violet-400/10"
+                                title="Restore Script"
+                              >
+                                <RotateCcw className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onDelete(script.id);
+                                }}
+                                className="text-zinc-600 hover:text-rose-400 transition-colors p-1.5 rounded-lg hover:bg-rose-400/10"
+                                title="Delete Permanently"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onToggleDone(script.id);
+                                }}
+                                className={`p-1.5 rounded-lg transition-colors ${script.done ? "bg-green-500/10 text-green-500" : "text-zinc-600 hover:text-green-400 hover:bg-green-400/10"}`}
+                                title={
+                                  script.done
+                                    ? "Mark as Active"
+                                    : "Mark as Finished"
+                                }
+                              >
+                                <CheckCircle2 className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onDelete(script.id);
+                                }}
+                                className="text-zinc-600 hover:text-rose-400 transition-colors p-1.5 rounded-lg hover:bg-rose-400/10"
+                                title="Move to Trash"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      </div>
+
+                      <h3
+                        className="relative z-10 text-lg font-bold text-zinc-100 mb-3 line-clamp-2 group-hover:text-white transition-colors"
+                        dir="auto"
+                      >
+                        {script.title || "Untitled Script"}
+                      </h3>
+
+                      <p
+                        className="relative z-10 text-sm text-zinc-400/80 line-clamp-3 flex-grow leading-relaxed font-medium"
+                        dir="auto"
+                      >
+                        {snippet}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-24 text-center animate-scale-in">
+                <div className="relative mb-8">
+                  <div className="absolute inset-0 bg-violet-500/20 blur-3xl rounded-full"></div>
+                  <div className="relative w-28 h-28 bg-zinc-900/80 border border-white/10 rounded-full flex items-center justify-center shadow-2xl">
+                    <Sparkles className="w-12 h-12 text-violet-400" />
+                  </div>
+                </div>
+                <h3 className="text-3xl font-extrabold text-white mb-3 tracking-tight">
+                  Blank Canvas
+                </h3>
+                <p className="text-zinc-400 max-w-md mb-8 text-lg">
+                  Your next viral hit starts here. Choose a platform and start
+                  writing your script.
+                </p>
+                <button
+                  onClick={openPlatformModal}
+                  className="group relative inline-flex items-center justify-center gap-2 bg-white text-zinc-950 px-8 py-3.5 rounded-full font-bold transition-all transform hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(255,255,255,0.1)]"
+                >
+                  Create Script{" "}
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </button>
+              </div>
+            )}
+          </main>
+        );
+      }
+
+      // --- EDITOR COMPONENT ---
+      function Editor({
+        script,
+        isNew,
+        globalWPM,
+        defaultFontSize,
+        onSave,
+        onClose,
+        onDelete,
+      }) {
+        const [title, setTitle] = useState(script?.title || "");
+        const [blocks, setBlocks] = useState(
+          script?.blocks && script.blocks.length > 0
+            ? script.blocks
+            : [{ id: `b-${Date.now()}`, title: "Hook", content: "" }],
+        );
+        const [wordCount, setWordCount] = useState(0);
+        const editorContainerRef = useRef(null);
+        const [lastAutoSave, setLastAutoSave] = useState(null);
+
+        // Drag and Drop State
+        const [draggedItemIndex, setDraggedItemIndex] = useState(null);
+        const [draggedOverItemIndex, setDraggedOverItemIndex] = useState(null);
+        const [draggableBlockId, setDraggableBlockId] = useState(null);
+
+        // Toolbar State
+        const [toolbarVisible, setToolbarVisible] = useState(false);
+        const [position, setPosition] = useState({ top: 0, left: 0 });
+        const [showColors, setShowColors] = useState(false);
+        const [showElements, setShowElements] = useState(false);
+        const [showFonts, setShowFonts] = useState(false);
+        const [fontSizeInput, setFontSizeInput] = useState(
+          defaultFontSize || 16,
+        );
+
+        const toolbarRef = useRef(null);
+        const savedRangeRef = useRef(null);
+
+        // Teleprompter State
+        const [showTeleprompter, setShowTeleprompter] = useState(false);
+        const [isPlaying, setIsPlaying] = useState(false);
+        const [scrollSpeed, setScrollSpeed] = useState(3);
+        const [teleprompterSize, setTeleprompterSize] = useState(64);
+        const teleprompterRef = useRef(null);
+        const requestRef = useRef();
+
+        const colors = [
+          "#ffffff",
+          "#a1a1aa",
+          "#ef4444",
+          "#f59e0b",
+          "#10b981",
+          "#3b82f6",
+          "#8b5cf6",
+          "#ec4899",
+        ];
+
+        useEffect(() => {
+          updateStats();
+        }, [blocks]);
+
+        // Autosave Interval
+        useEffect(() => {
+          const autoSaveTimer = setInterval(() => {
+            const finalBlocks = blocks.map((b) => {
+              const el = document.getElementById(b.id);
+              return { ...b, content: el ? el.innerHTML : b.content };
             });
-            const sortedScripts = [...filteredScripts].sort((a, b) => b.updatedAt - a.updatedAt);
+            const hasContent = finalBlocks.some(
+              (b) =>
+                b.title.trim() || b.content.trim().replace(/<[^>]*>?/gm, ""),
+            );
+            if (title.trim() || hasContent) {
+              onSave(
+                {
+                  title: title.trim(),
+                  platform: script?.platform || window.__tempPlatform,
+                  blocks: finalBlocks,
+                },
+                false,
+              );
+              setLastAutoSave(new Date());
+            }
+          }, 5000);
+          return () => clearInterval(autoSaveTimer);
+        }, [title, blocks, script]);
 
-            return (
-                <main className="flex-grow w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-                    {/* Modern Pill Filter */}
-                    <div className="flex justify-center mb-12">
-                        <div className="inline-flex p-1.5 bg-zinc-900/60 backdrop-blur-md rounded-full border border-white/5 shadow-xl">
-                            <button onClick={() => setFilter('all')} className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 flex items-center gap-2 ${filter === 'all' ? 'bg-zinc-800 text-white shadow-md' : 'text-zinc-500 hover:text-zinc-200'}`}>
-                                <LayoutGrid className="w-4 h-4" /> All
-                            </button>
-                            <button onClick={() => setFilter('youtube')} className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 flex items-center gap-2 ${filter === 'youtube' ? 'bg-zinc-800 text-white shadow-md' : 'text-zinc-500 hover:text-zinc-200'}`}>
-                                <Youtube className={`w-4 h-4 ${filter === 'youtube' ? 'text-red-500' : ''}`} /> YouTube
-                            </button>
-                            <button onClick={() => setFilter('tiktok')} className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 flex items-center gap-2 ${filter === 'tiktok' ? 'bg-zinc-800 text-white shadow-md' : 'text-zinc-500 hover:text-zinc-200'}`}>
-                                <Smartphone className={`w-4 h-4 ${filter === 'tiktok' ? 'text-cyan-400' : ''}`} /> TikTok
-                            </button>
-                            <button onClick={() => setFilter('finished')} className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 flex items-center gap-2 ${filter === 'finished' ? 'bg-zinc-800 text-white shadow-md' : 'text-zinc-500 hover:text-zinc-200'}`}>
-                                <CheckCircle2 className={`w-4 h-4 ${filter === 'finished' ? 'text-green-500' : ''}`} /> Finished
-                            </button>
-                        </div>
-                    </div>
+        // Teleprompter Animation
+        useEffect(() => {
+          const animate = () => {
+            if (isPlaying && teleprompterRef.current)
+              teleprompterRef.current.scrollTop += scrollSpeed * 0.5;
+            requestRef.current = requestAnimationFrame(animate);
+          };
+          if (isPlaying) requestRef.current = requestAnimationFrame(animate);
+          else cancelAnimationFrame(requestRef.current);
+          return () => cancelAnimationFrame(requestRef.current);
+        }, [isPlaying, scrollSpeed]);
 
-                    {sortedScripts.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                            {sortedScripts.map(script => {
-                                const date = new Date(script.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                                const snippetText = script.blocks ? script.blocks.map(b => b.content.replace(/<[^>]+>/g, '')).join(' ') : 'Empty script...';
-                                const snippet = snippetText.length > 100 ? snippetText.substring(0, 100) + '...' : snippetText;
-                                const isYT = script.platform === 'youtube';
+        // Floating Toolbar Logic
+        useEffect(() => {
+          const handleSelectionChange = () => {
+            const selection = window.getSelection();
+            if (
+              toolbarRef.current &&
+              (toolbarRef.current.contains(document.activeElement) ||
+                (selection.anchorNode &&
+                  toolbarRef.current.contains(selection.anchorNode)))
+            )
+              return;
 
-                                return (
-                                    <div key={script.id} onClick={() => openEditor(script.id)} className="group relative p-6 rounded-3xl bg-zinc-900/40 border border-white/5 hover:border-white/10 transition-all duration-300 overflow-hidden flex flex-col h-64 cursor-pointer hover:-translate-y-1 shadow-lg hover:shadow-2xl">
-                                        {/* Ambient Glow on Hover */}
-                                        <div className={`absolute inset-0 bg-gradient-to-br ${isYT ? 'from-red-500/5' : 'from-cyan-400/5'} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
-                                        
-                                        <div className="relative z-10 flex justify-between items-start mb-5">
-                                            <div className={`p-2 rounded-xl border ${isYT ? 'bg-red-500/10 border-red-500/20 text-red-400' : 'bg-cyan-500/10 border-cyan-500/20 text-cyan-400'}`}>
-                                                {isYT ? <Youtube className="w-5 h-5" /> : <Smartphone className="w-5 h-5" />}
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-[11px] font-medium text-zinc-500 uppercase tracking-wider">{date}</span>
-                                                <button onClick={(e) => { e.stopPropagation(); onToggleDone(script.id); }} className={`p-1.5 rounded-lg transition-colors ${script.done ? 'bg-green-500/10 text-green-500' : 'text-zinc-600 hover:text-green-400 hover:bg-green-400/10'}`} title={script.done ? "Mark as Active" : "Mark as Finished"}>
-                                                    <CheckCircle2 className="w-4 h-4" />
-                                                </button>
-                                                <button onClick={(e) => { e.stopPropagation(); onDelete(script.id); }} className="text-zinc-600 hover:text-rose-400 transition-colors p-1.5 rounded-lg hover:bg-rose-400/10" title="Delete Script">
-                                                    <Trash2 className="w-4 h-4" />
-                                                </button>
-                                            </div>
-                                        </div>
-                                        
-                                        <h3 className="relative z-10 text-lg font-bold text-zinc-100 mb-3 line-clamp-2 group-hover:text-white transition-colors" dir="auto">
-                                            {script.title || 'Untitled Script'}
-                                        </h3>
-                                        
-                                        <p className="relative z-10 text-sm text-zinc-400/80 line-clamp-3 flex-grow leading-relaxed font-medium" dir="auto">
-                                            {snippet}
-                                        </p>
-                                    </div>
-                                );
-                            })}
-                        </div>
+            if (
+              !selection ||
+              selection.isCollapsed ||
+              selection.rangeCount === 0
+            ) {
+              setToolbarVisible(false);
+              setShowColors(false);
+              setShowElements(false);
+              setShowFonts(false);
+              return;
+            }
+
+            if (
+              editorContainerRef.current &&
+              editorContainerRef.current.contains(selection.anchorNode)
+            ) {
+              let isInsideContentEditable = false;
+              let node = selection.anchorNode;
+              while (node && node !== editorContainerRef.current) {
+                if (
+                  node.nodeType === 1 &&
+                  node.getAttribute("contenteditable") === "true"
+                ) {
+                  isInsideContentEditable = true;
+                  break;
+                }
+                node = node.parentNode;
+              }
+
+              if (isInsideContentEditable) {
+                const range = selection.getRangeAt(0);
+                savedRangeRef.current = range.cloneRange();
+                const rect = range.getBoundingClientRect();
+                if (rect.width > 0) {
+                  setPosition({
+                    top: rect.top - 16,
+                    left: rect.left + rect.width / 2,
+                  });
+                  setToolbarVisible(true);
+                } else setToolbarVisible(false);
+              } else setToolbarVisible(false);
+            } else setToolbarVisible(false);
+          };
+
+          document.addEventListener("selectionchange", handleSelectionChange);
+          return () =>
+            document.removeEventListener(
+              "selectionchange",
+              handleSelectionChange,
+            );
+        }, []);
+
+        const restoreSelection = () => {
+          if (savedRangeRef.current) {
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(savedRangeRef.current);
+            let node = savedRangeRef.current.commonAncestorContainer;
+            while (node && node.nodeType !== 1) node = node.parentNode;
+            if (node) {
+              const block = node.closest
+                ? node.closest(".block-content")
+                : null;
+              if (block && document.activeElement !== block) block.focus();
+            }
+          }
+        };
+
+        const applyFormat = (e, command, value = null) => {
+          e.preventDefault();
+          restoreSelection();
+          document.execCommand(command, false, value);
+          if (command === "foreColor") setShowColors(false);
+          updateStats();
+        };
+        const applyBlockFormat = (e, tag) => {
+          e.preventDefault();
+          restoreSelection();
+          document.execCommand("formatBlock", false, tag);
+          setShowElements(false);
+          updateStats();
+        };
+        const applyFontFamily = (e, font) => {
+          e.preventDefault();
+          restoreSelection();
+          document.execCommand("fontName", false, font);
+          setShowFonts(false);
+          updateStats();
+        };
+
+        const applyFontSizeValue = (size, e = null) => {
+          if (e) e.preventDefault();
+          restoreSelection();
+          document.execCommand("fontSize", false, "7");
+          const container = editorContainerRef.current;
+          if (!container) return;
+          const targetSize = size || 16;
+          container.querySelectorAll('font[size="7"]').forEach((el) => {
+            el.removeAttribute("size");
+            el.style.fontSize = `${targetSize}px`;
+            el.style.lineHeight = "normal";
+          });
+          container.querySelectorAll("span").forEach((el) => {
+            if (
+              el.style.fontSize === "-webkit-xxx-large" ||
+              el.style.fontSize === "xxx-large"
+            ) {
+              el.style.fontSize = `${targetSize}px`;
+              el.style.lineHeight = "normal";
+            }
+          });
+          updateStats();
+        };
+
+        const adjustFontSize = (delta, e) => {
+          e.preventDefault();
+          const newSize = Number(fontSizeInput) + delta;
+          setFontSizeInput(newSize);
+          applyFontSizeValue(newSize, null);
+        };
+
+        const applyDirection = (e, dir) => {
+          e.preventDefault();
+          restoreSelection();
+          let node = window.getSelection().anchorNode;
+          if (node && node.nodeType === 3) node = node.parentNode;
+          const blockTags = [
+            "P",
+            "DIV",
+            "H1",
+            "H2",
+            "H3",
+            "H4",
+            "H5",
+            "H6",
+            "BLOCKQUOTE",
+            "UL",
+            "LI",
+          ];
+          while (node && node !== editorContainerRef.current) {
+            if (
+              blockTags.includes(node.tagName) ||
+              node.classList.contains("block-content")
+            ) {
+              node.setAttribute("dir", dir);
+              node.style.textAlign = dir === "rtl" ? "right" : "left";
+              break;
+            }
+            node = node.parentNode;
+          }
+          updateStats();
+        };
+
+        const updateStats = () => {
+          if (editorContainerRef.current) {
+            const contentDivs =
+              editorContainerRef.current.querySelectorAll(".block-content");
+            let text = "";
+            contentDivs.forEach((div) => (text += div.innerText + " "));
+            setWordCount(
+              text
+                .split(/\s+/)
+                .filter((w) => w.replace(/[.؟!،,;\-]/g, "").trim().length > 0)
+                .length,
+            );
+          }
+        };
+
+        const handleDragStart = (e, index) => {
+          setDraggedItemIndex(index);
+          e.dataTransfer.effectAllowed = "move";
+          e.dataTransfer.setData("text/plain", index);
+        };
+
+        const handleDragEnter = (index) => {
+          setDraggedOverItemIndex(index);
+        };
+
+        const handleDragEnd = () => {
+          if (
+            draggedItemIndex !== null &&
+            draggedOverItemIndex !== null &&
+            draggedItemIndex !== draggedOverItemIndex
+          ) {
+            const newBlocks = [...blocks];
+            const draggedItem = newBlocks.splice(draggedItemIndex, 1)[0];
+            newBlocks.splice(draggedOverItemIndex, 0, draggedItem);
+            setBlocks(newBlocks);
+          }
+          setDraggedItemIndex(null);
+          setDraggedOverItemIndex(null);
+          setDraggableBlockId(null);
+          setTimeout(updateStats, 100);
+        };
+
+        const handleBlockChange = (id, newContent) =>
+          setBlocks(
+            blocks.map((b) =>
+              b.id === id ? { ...b, content: newContent } : b,
+            ),
+          );
+        const handleTitleChange = (id, newTitle) =>
+          setBlocks(
+            blocks.map((b) => (b.id === id ? { ...b, title: newTitle } : b)),
+          );
+        const addBlock = () =>
+          setBlocks([
+            ...blocks,
+            { id: `b-${Date.now()}`, title: "", content: "" },
+          ]);
+        const removeBlock = (id) =>
+          setBlocks(blocks.filter((b) => b.id !== id));
+
+        const saveScriptManual = (closeEditor = true) => {
+          const finalBlocks = blocks.map((b) => {
+            const el = document.getElementById(b.id);
+            return { ...b, content: el ? el.innerHTML : b.content };
+          });
+          const hasContent = finalBlocks.some(
+            (b) => b.title.trim() || b.content.trim().replace(/<[^>]*>?/gm, ""),
+          );
+          if (!title.trim() && !hasContent && isNew) {
+            if (closeEditor) onClose();
+            return;
+          }
+          onSave(
+            {
+              title: title.trim(),
+              platform: script?.platform || window.__tempPlatform,
+              blocks: finalBlocks,
+            },
+            closeEditor,
+          );
+        };
+
+        const totalSeconds = Math.ceil((wordCount / globalWPM) * 60);
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+        const formattedTime = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+        const isYT =
+          script?.platform === "youtube" || window.__tempPlatform === "youtube";
+
+        const ToolButton = ({ icon: Icon, onClick, active, title }) => (
+          <button
+            onMouseDown={onClick}
+            title={title}
+            className={`p-2 rounded-lg transition-colors flex items-center justify-center ${active ? "bg-violet-500/20 text-violet-300" : "text-zinc-400 hover:bg-zinc-700/50 hover:text-white"}`}
+          >
+            <Icon size={16} />
+          </button>
+        );
+
+        return (
+          <>
+            <div className="flex-grow w-full max-w-4xl mx-auto flex flex-col pb-20 overflow-y-auto relative animate-scale-in">
+              {/* Editor Header */}
+              <div className="sticky top-0 z-30 glass-nav px-2 py-4 flex items-center justify-between mb-8 -mx-4 sm:mx-0 sm:px-6 sm:rounded-b-3xl">
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={() => saveScriptManual(true)}
+                    className="flex items-center gap-1.5 text-zinc-400 hover:text-white transition-colors px-3 py-2 rounded-full hover:bg-white/5 font-medium text-sm"
+                  >
+                    <ChevronLeft className="w-4 h-4" /> Back
+                  </button>
+                  <div
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold tracking-wide uppercase border ${isYT ? "bg-red-500/10 text-red-400 border-red-500/20" : "bg-cyan-500/10 text-cyan-400 border-cyan-500/20"}`}
+                  >
+                    {isYT ? (
+                      <Youtube className="w-3.5 h-3.5" />
                     ) : (
-                        <div className="flex flex-col items-center justify-center py-24 text-center animate-scale-in">
-                            <div className="relative mb-8">
-                                <div className="absolute inset-0 bg-violet-500/20 blur-3xl rounded-full"></div>
-                                <div className="relative w-28 h-28 bg-zinc-900/80 border border-white/10 rounded-full flex items-center justify-center shadow-2xl">
-                                    <Sparkles className="w-12 h-12 text-violet-400" />
-                                </div>
-                            </div>
-                            <h3 className="text-3xl font-extrabold text-white mb-3 tracking-tight">Blank Canvas</h3>
-                            <p className="text-zinc-400 max-w-md mb-8 text-lg">Your next viral hit starts here. Choose a platform and start writing your script.</p>
-                            <button onClick={openPlatformModal} className="group relative inline-flex items-center justify-center gap-2 bg-white text-zinc-950 px-8 py-3.5 rounded-full font-bold transition-all transform hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(255,255,255,0.1)]">
-                                Create Script <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                            </button>
-                        </div>
+                      <Smartphone className="w-3.5 h-3.5" />
                     )}
-                </main>
-            );
-        }
+                    {isYT ? "YouTube" : "TikTok"}
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  {lastAutoSave && (
+                    <div className="hidden sm:flex items-center gap-1.5 text-xs text-zinc-500 font-medium mr-2">
+                      <Check className="w-3.5 h-3.5" />
+                      <span>
+                        Saved{" "}
+                        {lastAutoSave.toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </span>
+                    </div>
+                  )}
+                  <button
+                    onClick={() => setShowTeleprompter(true)}
+                    className="flex items-center gap-2 bg-white hover:bg-zinc-200 text-zinc-950 px-5 py-2 rounded-full font-bold transition-transform transform hover:scale-105 text-sm shadow-[0_0_15px_rgba(255,255,255,0.1)]"
+                  >
+                    <Play className="w-4 h-4 fill-zinc-950" /> Prompter
+                  </button>
+                </div>
+              </div>
 
-        // --- EDITOR COMPONENT ---
-        function Editor({ script, isNew, globalWPM, defaultFontSize, onSave, onClose, onDelete }) {
-            const [title, setTitle] = useState(script?.title || '');
-            const [blocks, setBlocks] = useState(script?.blocks && script.blocks.length > 0 ? script.blocks : [{ id: `b-${Date.now()}`, title: 'Hook', content: '' }]);
-            const [wordCount, setWordCount] = useState(0);
-            const editorContainerRef = useRef(null);
-            const [lastAutoSave, setLastAutoSave] = useState(null);
+              <div
+                className="px-6 sm:px-10 flex-grow flex flex-col gap-8 relative"
+                ref={editorContainerRef}
+              >
+                {/* Title Input */}
+                <div className="relative group">
+                  <input
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="Untitled Script"
+                    dir="auto"
+                    className="w-full bg-transparent text-5xl md:text-6xl font-extrabold text-white placeholder-zinc-800 focus:outline-none border-none p-0 tracking-tight transition-all focus:text-transparent focus:bg-clip-text focus:bg-gradient-to-r focus:from-white focus:to-zinc-400"
+                  />
+                </div>
 
-            // Toolbar State
-            const [toolbarVisible, setToolbarVisible] = useState(false);
-            const [position, setPosition] = useState({ top: 0, left: 0 });
-            const [showColors, setShowColors] = useState(false);
-            const [showElements, setShowElements] = useState(false);
-            const [showFonts, setShowFonts] = useState(false);
-            const [fontSizeInput, setFontSizeInput] = useState(defaultFontSize || 16);
-            
-            const toolbarRef = useRef(null);
-            const savedRangeRef = useRef(null);
+                {/* Meta Stats Row */}
+                <div className="flex flex-wrap items-center gap-3 text-xs font-semibold">
+                  <div className="flex items-center gap-2 text-zinc-400 bg-zinc-900/50 border border-white/5 px-3 py-1.5 rounded-full">
+                    <FileText className="w-3.5 h-3.5 text-violet-400" />
+                    {wordCount} words
+                  </div>
+                  <div className="flex items-center gap-2 text-zinc-400 bg-zinc-900/50 border border-white/5 px-3 py-1.5 rounded-full">
+                    <Clock className="w-3.5 h-3.5 text-violet-400" />
+                    {formattedTime} est.
+                  </div>
+                  <div
+                    className="flex items-center gap-2 text-zinc-500 bg-transparent px-3 py-1.5 rounded-full"
+                    title="Change reading speed in main settings"
+                  >
+                    <Gauge className="w-3.5 h-3.5" />
+                    {globalWPM} WPM
+                  </div>
+                </div>
 
-            // Teleprompter State
-            const [showTeleprompter, setShowTeleprompter] = useState(false);
-            const [isPlaying, setIsPlaying] = useState(false);
-            const [scrollSpeed, setScrollSpeed] = useState(3);
-            const [teleprompterSize, setTeleprompterSize] = useState(64);
-            const teleprompterRef = useRef(null);
-            const requestRef = useRef();
-
-            const colors = ['#ffffff', '#a1a1aa', '#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899'];
-
-            useEffect(() => { updateStats(); }, [blocks]);
-
-            // Autosave Interval
-            useEffect(() => {
-                const autoSaveTimer = setInterval(() => {
-                    const finalBlocks = blocks.map(b => { 
-                        const el = document.getElementById(b.id); 
-                        return { ...b, content: el ? el.innerHTML : b.content }; 
-                    });
-                    const hasContent = finalBlocks.some(b => b.title.trim() || b.content.trim().replace(/<[^>]*>?/gm, ''));
-                    if (title.trim() || hasContent) {
-                        onSave({ title: title.trim(), platform: script?.platform || window.__tempPlatform, blocks: finalBlocks }, false);
-                        setLastAutoSave(new Date());
-                    }
-                }, 5000);
-                return () => clearInterval(autoSaveTimer);
-            }, [title, blocks, script]);
-
-            // Teleprompter Animation
-            useEffect(() => {
-                const animate = () => {
-                    if (isPlaying && teleprompterRef.current) teleprompterRef.current.scrollTop += scrollSpeed * 0.5;
-                    requestRef.current = requestAnimationFrame(animate);
-                };
-                if (isPlaying) requestRef.current = requestAnimationFrame(animate);
-                else cancelAnimationFrame(requestRef.current);
-                return () => cancelAnimationFrame(requestRef.current);
-            }, [isPlaying, scrollSpeed]);
-
-            // Floating Toolbar Logic
-            useEffect(() => {
-                const handleSelectionChange = () => {
-                    const selection = window.getSelection();
-                    if (toolbarRef.current && (toolbarRef.current.contains(document.activeElement) || (selection.anchorNode && toolbarRef.current.contains(selection.anchorNode)))) return;
-                    
-                    if (!selection || selection.isCollapsed || selection.rangeCount === 0) {
-                        setToolbarVisible(false); setShowColors(false); setShowElements(false); setShowFonts(false);
-                        return;
-                    }
-
-                    if (editorContainerRef.current && editorContainerRef.current.contains(selection.anchorNode)) {
-                        let isInsideContentEditable = false;
-                        let node = selection.anchorNode;
-                        while (node && node !== editorContainerRef.current) {
-                            if (node.nodeType === 1 && node.getAttribute('contenteditable') === 'true') { isInsideContentEditable = true; break; }
-                            node = node.parentNode;
-                        }
-
-                        if (isInsideContentEditable) {
-                            const range = selection.getRangeAt(0);
-                            savedRangeRef.current = range.cloneRange();
-                            const rect = range.getBoundingClientRect();
-                            if (rect.width > 0) {
-                                setPosition({ top: rect.top - 16, left: rect.left + (rect.width / 2) });
-                                setToolbarVisible(true);
-                            } else setToolbarVisible(false);
-                        } else setToolbarVisible(false);
-                    } else setToolbarVisible(false);
-                };
-
-                document.addEventListener('selectionchange', handleSelectionChange);
-                return () => document.removeEventListener('selectionchange', handleSelectionChange);
-            }, []);
-
-            const restoreSelection = () => {
-                if (savedRangeRef.current) {
-                    const sel = window.getSelection();
-                    sel.removeAllRanges();
-                    sel.addRange(savedRangeRef.current);
-                    let node = savedRangeRef.current.commonAncestorContainer;
-                    while (node && node.nodeType !== 1) node = node.parentNode;
-                    if (node) {
-                        const block = node.closest ? node.closest('.block-content') : null;
-                        if (block && document.activeElement !== block) block.focus();
-                    }
-                }
-            };
-
-            const applyFormat = (e, command, value = null) => { e.preventDefault(); restoreSelection(); document.execCommand(command, false, value); if (command === 'foreColor') setShowColors(false); updateStats(); };
-            const applyBlockFormat = (e, tag) => { e.preventDefault(); restoreSelection(); document.execCommand('formatBlock', false, tag); setShowElements(false); updateStats(); };
-            const applyFontFamily = (e, font) => { e.preventDefault(); restoreSelection(); document.execCommand('fontName', false, font); setShowFonts(false); updateStats(); };
-
-            const applyFontSizeValue = (size, e = null) => {
-                if (e) e.preventDefault();
-                restoreSelection(); document.execCommand('fontSize', false, '7');
-                const container = editorContainerRef.current;
-                if (!container) return;
-                const targetSize = size || 16;
-                container.querySelectorAll('font[size="7"]').forEach(el => { el.removeAttribute('size'); el.style.fontSize = `${targetSize}px`; el.style.lineHeight = 'normal'; });
-                container.querySelectorAll('span').forEach(el => { if (el.style.fontSize === '-webkit-xxx-large' || el.style.fontSize === 'xxx-large') { el.style.fontSize = `${targetSize}px`; el.style.lineHeight = 'normal'; } });
-                updateStats();
-            };
-
-            const adjustFontSize = (delta, e) => { e.preventDefault(); const newSize = Number(fontSizeInput) + delta; setFontSizeInput(newSize); applyFontSizeValue(newSize, null); };
-
-            const applyDirection = (e, dir) => {
-                e.preventDefault(); restoreSelection();
-                let node = window.getSelection().anchorNode;
-                if (node && node.nodeType === 3) node = node.parentNode;
-                const blockTags = ['P', 'DIV', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'BLOCKQUOTE', 'UL', 'LI'];
-                while (node && node !== editorContainerRef.current) {
-                    if (blockTags.includes(node.tagName) || node.classList.contains('block-content')) {
-                        node.setAttribute('dir', dir); node.style.textAlign = dir === 'rtl' ? 'right' : 'left'; break;
-                    }
-                    node = node.parentNode;
-                }
-                updateStats();
-            };
-
-            const updateStats = () => {
-                if (editorContainerRef.current) {
-                    const contentDivs = editorContainerRef.current.querySelectorAll('.block-content');
-                    let text = '';
-                    contentDivs.forEach(div => text += div.innerText + ' ');
-                    setWordCount(text.split(/\s+/).filter(w => w.replace(/[.؟!،,;\-]/g, '').trim().length > 0).length);
-                }
-            };
-
-            const handleBlockChange = (id, newContent) => setBlocks(blocks.map(b => b.id === id ? { ...b, content: newContent } : b));
-            const handleTitleChange = (id, newTitle) => setBlocks(blocks.map(b => b.id === id ? { ...b, title: newTitle } : b));
-            const addBlock = () => setBlocks([...blocks, { id: `b-${Date.now()}`, title: '', content: '' }]);
-            const removeBlock = (id) => setBlocks(blocks.filter(b => b.id !== id));
-
-            const saveScriptManual = (closeEditor = true) => {
-                const finalBlocks = blocks.map(b => { 
-                    const el = document.getElementById(b.id); 
-                    return { ...b, content: el ? el.innerHTML : b.content }; 
-                });
-                const hasContent = finalBlocks.some(b => b.title.trim() || b.content.trim().replace(/<[^>]*>?/gm, ''));
-                if (!title.trim() && !hasContent && isNew) { if (closeEditor) onClose(); return; }
-                onSave({ title: title.trim(), platform: script?.platform || window.__tempPlatform, blocks: finalBlocks }, closeEditor);
-            };
-
-            const totalSeconds = Math.ceil((wordCount / globalWPM) * 60);
-            const minutes = Math.floor(totalSeconds / 60);
-            const seconds = totalSeconds % 60;
-            const formattedTime = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-            const isYT = script?.platform === 'youtube' || window.__tempPlatform === 'youtube';
-
-            const ToolButton = ({ icon: Icon, onClick, active, title }) => (
-                <button onMouseDown={onClick} title={title} className={`p-2 rounded-lg transition-colors flex items-center justify-center ${active ? 'bg-violet-500/20 text-violet-300' : 'text-zinc-400 hover:bg-zinc-700/50 hover:text-white'}`}><Icon size={16} /></button>
-            );
-
-            return (
-                <>
-                    <div className="flex-grow w-full max-w-4xl mx-auto flex flex-col pb-20 overflow-y-auto relative animate-scale-in">
-                        
-                        {/* Editor Header */}
-                        <div className="sticky top-0 z-30 glass-nav px-2 py-4 flex items-center justify-between mb-8 -mx-4 sm:mx-0 sm:px-6 sm:rounded-b-3xl">
-                            <div className="flex items-center gap-4">
-                                <button onClick={() => saveScriptManual(true)} className="flex items-center gap-1.5 text-zinc-400 hover:text-white transition-colors px-3 py-2 rounded-full hover:bg-white/5 font-medium text-sm">
-                                    <ChevronLeft className="w-4 h-4" /> Back
-                                </button>
-                                <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold tracking-wide uppercase border ${isYT ? 'bg-red-500/10 text-red-400 border-red-500/20' : 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20'}`}>
-                                    {isYT ? <Youtube className="w-3.5 h-3.5" /> : <Smartphone className="w-3.5 h-3.5" />}
-                                    {isYT ? 'YouTube' : 'TikTok'}
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-3">
-                                {lastAutoSave && (
-                                    <div className="hidden sm:flex items-center gap-1.5 text-xs text-zinc-500 font-medium mr-2">
-                                        <Check className="w-3.5 h-3.5" />
-                                        <span>Saved {lastAutoSave.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-                                    </div>
-                                )}
-                                <button onClick={() => setShowTeleprompter(true)} className="flex items-center gap-2 bg-white hover:bg-zinc-200 text-zinc-950 px-5 py-2 rounded-full font-bold transition-transform transform hover:scale-105 text-sm shadow-[0_0_15px_rgba(255,255,255,0.1)]">
-                                    <Play className="w-4 h-4 fill-zinc-950" /> Prompter
-                                </button>
-                            </div>
+                {/* Blocks Container */}
+                <div className="flex flex-col gap-6 mt-4">
+                  {blocks.map((block, index) => (
+                    <div
+                      key={block.id}
+                      className={`relative group/block flex gap-4 transition-all duration-300 ${draggedItemIndex === index ? "opacity-40 scale-95" : ""} ${draggedOverItemIndex === index ? (draggedItemIndex < index ? "border-b-2 border-b-violet-500 pb-2" : "border-t-2 border-t-violet-500 pt-2") : ""}`}
+                      draggable={draggableBlockId === block.id}
+                      onDragStart={(e) => handleDragStart(e, index)}
+                      onDragEnter={() => handleDragEnter(index)}
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        e.dataTransfer.dropEffect = "move";
+                      }}
+                      onDragEnd={handleDragEnd}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        handleDragEnd();
+                      }}
+                    >
+                      {/* Drag Handle */}
+                      <div
+                        className="w-6 flex flex-col items-center pt-3 opacity-0 group-hover/block:opacity-100 transition-opacity text-zinc-500 cursor-grab active:cursor-grabbing hover:text-white"
+                        onMouseEnter={() => setDraggableBlockId(block.id)}
+                        onMouseLeave={() => setDraggableBlockId(null)}
+                      >
+                        <div className="h-6 w-6 flex items-center justify-center bg-zinc-800/50 rounded-md hover:bg-violet-500/20">
+                          <GripVertical className="w-4 h-4" />
                         </div>
+                      </div>
 
-                        <div className="px-6 sm:px-10 flex-grow flex flex-col gap-8 relative" ref={editorContainerRef}>
-                            
-                            {/* Title Input */}
-                            <div className="relative group">
-                                <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Untitled Script" dir="auto" className="w-full bg-transparent text-5xl md:text-6xl font-extrabold text-white placeholder-zinc-800 focus:outline-none border-none p-0 tracking-tight transition-all focus:text-transparent focus:bg-clip-text focus:bg-gradient-to-r focus:from-white focus:to-zinc-400" />
-                            </div>
+                      <div className="flex-grow bg-zinc-900/30 border border-white/5 rounded-3xl p-6 flex flex-col gap-3 focus-within:bg-zinc-900/60 focus-within:border-violet-500/40 transition-all duration-300 shadow-sm relative overflow-hidden group/inner">
+                        {/* Subtle Focus Glow */}
+                        <div className="absolute top-0 left-0 w-1 h-full bg-violet-500 opacity-0 group-focus-within/inner:opacity-100 transition-opacity"></div>
 
-                            {/* Meta Stats Row */}
-                            <div className="flex flex-wrap items-center gap-3 text-xs font-semibold">
-                                <div className="flex items-center gap-2 text-zinc-400 bg-zinc-900/50 border border-white/5 px-3 py-1.5 rounded-full"><FileText className="w-3.5 h-3.5 text-violet-400" />{wordCount} words</div>
-                                <div className="flex items-center gap-2 text-zinc-400 bg-zinc-900/50 border border-white/5 px-3 py-1.5 rounded-full"><Clock className="w-3.5 h-3.5 text-violet-400" />{formattedTime} est.</div>
-                                <div className="flex items-center gap-2 text-zinc-500 bg-transparent px-3 py-1.5 rounded-full" title="Change reading speed in main settings"><Gauge className="w-3.5 h-3.5" />{globalWPM} WPM</div>
-                            </div>
-
-                            {/* Blocks Container */}
-                            <div className="flex flex-col gap-6 mt-4">
-                                {blocks.map((block, index) => (
-                                    <div key={block.id} className="relative group/block flex gap-4">
-                                        {/* Minimal Side Handle */}
-                                        <div className="w-6 flex flex-col items-center pt-3 opacity-0 group-hover/block:opacity-100 transition-opacity text-zinc-600">
-                                            <div className="h-6 w-6 flex items-center justify-center"><span className="text-xs font-bold">{index + 1}</span></div>
-                                        </div>
-                                        
-                                        <div className="flex-grow bg-zinc-900/30 border border-white/5 rounded-3xl p-6 flex flex-col gap-3 focus-within:bg-zinc-900/60 focus-within:border-violet-500/40 transition-all duration-300 shadow-sm relative overflow-hidden group/inner">
-                                            {/* Subtle Focus Glow */}
-                                            <div className="absolute top-0 left-0 w-1 h-full bg-violet-500 opacity-0 group-focus-within/inner:opacity-100 transition-opacity"></div>
-                                            
-                                            <div className="flex justify-between items-center mb-1">
-                                                <input type="text" value={block.title} onChange={(e) => handleTitleChange(block.id, e.target.value)} placeholder="SECTION (e.g. Hook)" dir="auto" className="bg-transparent text-violet-400 font-bold focus:outline-none w-full text-xs uppercase tracking-widest placeholder-zinc-700" />
-                                                {blocks.length > 1 && (
-                                                    <button onClick={() => removeBlock(block.id)} className="text-zinc-600 hover:text-rose-400 opacity-0 group-hover/inner:opacity-100 focus-within:opacity-100 transition-opacity p-1.5 rounded-lg hover:bg-rose-400/10" title="Delete Block"><Trash2 className="w-4 h-4" /></button>
-                                                )}
-                                            </div>
-                                            <div id={block.id} contentEditable={true} suppressContentEditableWarning={true} onInput={updateStats} onBlur={(e) => handleBlockChange(block.id, e.currentTarget.innerHTML)} dir="auto" className="block-content bg-transparent text-zinc-200 leading-relaxed focus:outline-none min-h-[60px]" dangerouslySetInnerHTML={{ __html: block.content }} placeholder={block.content === '' ? 'Select text to style...' : ''} />
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                            
-                            {/* Add Block Button */}
-                            <div className="ml-10">
-                                <button onClick={addBlock} className="w-full py-5 border border-dashed border-white/10 hover:border-violet-500/50 bg-transparent hover:bg-violet-500/5 text-zinc-500 hover:text-violet-400 rounded-3xl flex items-center justify-center gap-2 transition-all font-semibold"><Plus className="w-5 h-5" /> Add Section</button>
-                            </div>
+                        <div className="flex justify-between items-center mb-1">
+                          <input
+                            type="text"
+                            value={block.title}
+                            onChange={(e) =>
+                              handleTitleChange(block.id, e.target.value)
+                            }
+                            placeholder="SECTION (e.g. Hook)"
+                            dir="auto"
+                            className="bg-transparent text-violet-400 font-bold focus:outline-none w-full text-xs uppercase tracking-widest placeholder-zinc-700"
+                          />
+                          {blocks.length > 1 && (
+                            <button
+                              onClick={() => removeBlock(block.id)}
+                              className="text-zinc-600 hover:text-rose-400 opacity-0 group-hover/inner:opacity-100 focus-within:opacity-100 transition-opacity p-1.5 rounded-lg hover:bg-rose-400/10"
+                              title="Delete Block"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          )}
                         </div>
+                        <div
+                          id={block.id}
+                          contentEditable={true}
+                          suppressContentEditableWarning={true}
+                          onInput={updateStats}
+                          onBlur={(e) =>
+                            handleBlockChange(
+                              block.id,
+                              e.currentTarget.innerHTML,
+                            )
+                          }
+                          dir="auto"
+                          className="block-content bg-transparent text-zinc-200 leading-relaxed focus:outline-none min-h-[60px]"
+                          dangerouslySetInnerHTML={{ __html: block.content }}
+                          placeholder={
+                            block.content === ""
+                              ? "Select text to style..."
+                              : ""
+                          }
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
 
-                        {/* Floating Formatter Toolbar */}
-                        {toolbarVisible && (
-                            <div ref={toolbarRef} className="fixed z-50 transform -translate-x-1/2 -translate-y-[120%] flex flex-col items-center pointer-events-auto transition-all duration-200 animate-scale-in" style={{ top: `${position.top}px`, left: `${position.left}px` }}>
-                                <div className="bg-zinc-800/95 backdrop-blur-xl rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.5)] border border-white/10 p-1.5 flex items-center gap-1 relative flex-wrap justify-center w-max max-w-[90vw]">
-                                    <ToolButton icon={Bold} title="Bold" onClick={(e) => applyFormat(e, 'bold')} />
-                                    <ToolButton icon={Italic} title="Italic" onClick={(e) => applyFormat(e, 'italic')} />
-                                    <ToolButton icon={Underline} title="Underline" onClick={(e) => applyFormat(e, 'underline')} />
-                                    <div className="w-px h-5 bg-white/10 mx-1"></div>
-                                    
-                                    {/* Font Size */}
-                                    <div className="flex items-center bg-zinc-900/50 rounded-lg border border-transparent focus-within:border-violet-500/50 overflow-hidden">
-                                        <button onMouseDown={(e) => adjustFontSize(-1, e)} className="text-zinc-400 hover:text-white hover:bg-zinc-700 px-2.5 py-1.5 transition-colors font-bold text-sm">-</button>
-                                        <input type="number" value={fontSizeInput} onChange={(e) => setFontSizeInput(e.target.value)} className="w-9 bg-transparent text-white text-sm font-medium text-center focus:outline-none appearance-none m-0" style={{ MozAppearance: 'textfield' }} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); applyFontSizeValue(fontSizeInput, null); } }} />
-                                        <button onMouseDown={(e) => adjustFontSize(1, e)} className="text-zinc-400 hover:text-white hover:bg-zinc-700 px-2.5 py-1.5 transition-colors font-bold text-sm">+</button>
-                                    </div>
-                                    
-                                    <div className="w-px h-5 bg-white/10 mx-1"></div>
-                                    
-                                    {/* Font Family */}
-                                    <div className="relative">
-                                        <button onMouseDown={(e) => { e.preventDefault(); setShowFonts(!showFonts); setShowElements(false); setShowColors(false); }} className={`flex items-center gap-1 px-3 py-1.5 rounded-lg transition-colors text-sm font-semibold ${showFonts ? 'bg-violet-500/20 text-violet-300' : 'text-zinc-300 hover:bg-zinc-700/50 hover:text-white'}`}><span className="hidden sm:inline">Font</span><span className="sm:hidden">F</span><ChevronDown size={14} /></button>
-                                        {showFonts && (
-                                            <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-3 w-44 bg-zinc-800 border border-white/10 rounded-xl shadow-2xl py-1 z-10 overflow-hidden max-h-48 overflow-y-auto">
-                                                {fontFamilies.map(font => <button key={font} onMouseDown={(e) => applyFontFamily(e, font)} style={{ fontFamily: font }} className="w-full px-4 py-2 text-left text-sm text-zinc-300 hover:bg-zinc-700 hover:text-white truncate transition-colors">{font}</button>)}
-                                            </div>
-                                        )}
-                                    </div>
+                {/* Add Block Button */}
+                <div className="ml-10">
+                  <button
+                    onClick={addBlock}
+                    className="w-full py-5 border border-dashed border-white/10 hover:border-violet-500/50 bg-transparent hover:bg-violet-500/5 text-zinc-500 hover:text-violet-400 rounded-3xl flex items-center justify-center gap-2 transition-all font-semibold"
+                  >
+                    <Plus className="w-5 h-5" /> Add Section
+                  </button>
+                </div>
+              </div>
 
-                                    <div className="w-px h-5 bg-white/10 mx-1"></div>
-                                    
-                                    {/* Color Picker */}
-                                    <div className="relative">
-                                        <ToolButton icon={Palette} title="Text Color" active={showColors} onClick={(e) => { e.preventDefault(); setShowColors(!showColors); setShowElements(false); setShowFonts(false); }} />
-                                        {showColors && (
-                                            <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-3 bg-zinc-800 border border-white/10 p-2.5 rounded-xl shadow-2xl flex gap-2 z-10">
-                                                {colors.map(color => <button key={color} onMouseDown={(e) => applyFormat(e, 'foreColor', color)} className="w-6 h-6 rounded-full border border-white/20 hover:scale-125 transition-transform" style={{ backgroundColor: color }} />)}
-                                            </div>
-                                        )}
-                                    </div>
+              {/* Floating Formatter Toolbar */}
+              {toolbarVisible && (
+                <div
+                  ref={toolbarRef}
+                  className="fixed z-50 transform -translate-x-1/2 -translate-y-[120%] flex flex-col items-center pointer-events-auto transition-all duration-200 animate-scale-in"
+                  style={{
+                    top: `${position.top}px`,
+                    left: `${position.left}px`,
+                  }}
+                >
+                  <div className="bg-zinc-800/95 backdrop-blur-xl rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.5)] border border-white/10 p-1.5 flex items-center gap-1 relative flex-wrap justify-center w-max max-w-[90vw]">
+                    <ToolButton
+                      icon={Bold}
+                      title="Bold"
+                      onClick={(e) => applyFormat(e, "bold")}
+                    />
+                    <ToolButton
+                      icon={Italic}
+                      title="Italic"
+                      onClick={(e) => applyFormat(e, "italic")}
+                    />
+                    <ToolButton
+                      icon={Underline}
+                      title="Underline"
+                      onClick={(e) => applyFormat(e, "underline")}
+                    />
+                    <div className="w-px h-5 bg-white/10 mx-1"></div>
 
-                                    <div className="w-px h-5 bg-white/10 mx-1"></div>
-                                    
-                                    {/* Formats */}
-                                    <div className="relative">
-                                        <button onMouseDown={(e) => { e.preventDefault(); setShowElements(!showElements); setShowColors(false); setShowFonts(false); }} className={`flex items-center gap-1 px-3 py-1.5 rounded-lg transition-colors text-sm font-semibold ${showElements ? 'bg-violet-500/20 text-violet-300' : 'text-zinc-300 hover:bg-zinc-700/50 hover:text-white'}`}><span className="hidden sm:inline">Type</span><span className="sm:hidden">T</span><ChevronDown size={14} /></button>
-                                        {showElements && (
-                                            <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-3 w-48 bg-zinc-800 border border-white/10 rounded-xl shadow-2xl py-1 z-10 overflow-hidden">
-                                                <button onMouseDown={(e) => applyBlockFormat(e, 'H1')} className="w-full px-4 py-2.5 text-left text-sm font-bold text-white hover:bg-zinc-700 flex items-center gap-2 transition-colors"><AlignLeft size={14} className="text-zinc-500"/> Header</button>
-                                                <button onMouseDown={(e) => applyBlockFormat(e, 'P')} className="w-full px-4 py-2.5 text-left text-sm font-normal text-zinc-300 hover:bg-zinc-700 flex items-center gap-2 transition-colors"><Type size={14} className="text-zinc-500"/> Paragraph</button>
-                                                <button onMouseDown={(e) => applyBlockFormat(e, 'H2')} className="w-full px-4 py-2.5 text-left text-sm font-semibold text-zinc-400 hover:bg-zinc-700 flex items-center gap-2 transition-colors uppercase tracking-widest"><User size={14} className="text-zinc-500"/> Character</button>
-                                                <button onMouseDown={(e) => applyBlockFormat(e, 'BLOCKQUOTE')} className="w-full px-4 py-2.5 text-left text-sm italic text-violet-300 hover:bg-zinc-700 flex items-center gap-2 transition-colors"><Type size={14} className="text-zinc-500"/> Dialogue</button>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    <div className="w-px h-5 bg-white/10 mx-1"></div>
-                                    <ToolButton icon={AlignLeft} title="Left to Right" onClick={(e) => applyDirection(e, 'ltr')} />
-                                    <ToolButton icon={AlignRight} title="Right to Left" onClick={(e) => applyDirection(e, 'rtl')} />
-                                </div>
-                                <div className="w-0 h-0 border-l-[6px] border-r-[6px] border-t-[6px] border-l-transparent border-r-transparent border-t-zinc-800/95 relative -top-[1px]"></div>
-                            </div>
-                        )}
+                    {/* Font Size */}
+                    <div className="flex items-center bg-zinc-900/50 rounded-lg border border-transparent focus-within:border-violet-500/50 overflow-hidden">
+                      <button
+                        onMouseDown={(e) => adjustFontSize(-1, e)}
+                        className="text-zinc-400 hover:text-white hover:bg-zinc-700 px-2.5 py-1.5 transition-colors font-bold text-sm"
+                      >
+                        -
+                      </button>
+                      <input
+                        type="number"
+                        value={fontSizeInput}
+                        onChange={(e) => setFontSizeInput(e.target.value)}
+                        className="w-9 bg-transparent text-white text-sm font-medium text-center focus:outline-none appearance-none m-0"
+                        style={{ MozAppearance: "textfield" }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            applyFontSizeValue(fontSizeInput, null);
+                          }
+                        }}
+                      />
+                      <button
+                        onMouseDown={(e) => adjustFontSize(1, e)}
+                        className="text-zinc-400 hover:text-white hover:bg-zinc-700 px-2.5 py-1.5 transition-colors font-bold text-sm"
+                      >
+                        +
+                      </button>
                     </div>
 
-                    {/* Teleprompter Fullscreen Mode - Moved outside of the transformed container */}
-                    {showTeleprompter && (
-                        <div className="fixed inset-0 z-[100] bg-black text-white flex flex-col font-sans animate-scale-in origin-center overflow-hidden">
-                            <style>{`
+                    <div className="w-px h-5 bg-white/10 mx-1"></div>
+
+                    {/* Font Family */}
+                    <div className="relative">
+                      <button
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          setShowFonts(!showFonts);
+                          setShowElements(false);
+                          setShowColors(false);
+                        }}
+                        className={`flex items-center gap-1 px-3 py-1.5 rounded-lg transition-colors text-sm font-semibold ${showFonts ? "bg-violet-500/20 text-violet-300" : "text-zinc-300 hover:bg-zinc-700/50 hover:text-white"}`}
+                      >
+                        <span className="hidden sm:inline">Font</span>
+                        <span className="sm:hidden">F</span>
+                        <ChevronDown size={14} />
+                      </button>
+                      {showFonts && (
+                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-3 w-44 bg-zinc-800 border border-white/10 rounded-xl shadow-2xl py-1 z-10 overflow-hidden max-h-48 overflow-y-auto">
+                          {fontFamilies.map((font) => (
+                            <button
+                              key={font}
+                              onMouseDown={(e) => applyFontFamily(e, font)}
+                              style={{ fontFamily: font }}
+                              className="w-full px-4 py-2 text-left text-sm text-zinc-300 hover:bg-zinc-700 hover:text-white truncate transition-colors"
+                            >
+                              {font}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="w-px h-5 bg-white/10 mx-1"></div>
+
+                    {/* Color Picker */}
+                    <div className="relative">
+                      <ToolButton
+                        icon={Palette}
+                        title="Text Color"
+                        active={showColors}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setShowColors(!showColors);
+                          setShowElements(false);
+                          setShowFonts(false);
+                        }}
+                      />
+                      {showColors && (
+                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-3 bg-zinc-800 border border-white/10 p-2.5 rounded-xl shadow-2xl flex gap-2 z-10">
+                          {colors.map((color) => (
+                            <button
+                              key={color}
+                              onMouseDown={(e) =>
+                                applyFormat(e, "foreColor", color)
+                              }
+                              className="w-6 h-6 rounded-full border border-white/20 hover:scale-125 transition-transform"
+                              style={{ backgroundColor: color }}
+                            />
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="w-px h-5 bg-white/10 mx-1"></div>
+
+                    {/* Formats */}
+                    <div className="relative">
+                      <button
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          setShowElements(!showElements);
+                          setShowColors(false);
+                          setShowFonts(false);
+                        }}
+                        className={`flex items-center gap-1 px-3 py-1.5 rounded-lg transition-colors text-sm font-semibold ${showElements ? "bg-violet-500/20 text-violet-300" : "text-zinc-300 hover:bg-zinc-700/50 hover:text-white"}`}
+                      >
+                        <span className="hidden sm:inline">Type</span>
+                        <span className="sm:hidden">T</span>
+                        <ChevronDown size={14} />
+                      </button>
+                      {showElements && (
+                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-3 w-48 bg-zinc-800 border border-white/10 rounded-xl shadow-2xl py-1 z-10 overflow-hidden">
+                          <button
+                            onMouseDown={(e) => applyBlockFormat(e, "H1")}
+                            className="w-full px-4 py-2.5 text-left text-sm font-bold text-white hover:bg-zinc-700 flex items-center gap-2 transition-colors"
+                          >
+                            <AlignLeft size={14} className="text-zinc-500" />{" "}
+                            Header
+                          </button>
+                          <button
+                            onMouseDown={(e) => applyBlockFormat(e, "P")}
+                            className="w-full px-4 py-2.5 text-left text-sm font-normal text-zinc-300 hover:bg-zinc-700 flex items-center gap-2 transition-colors"
+                          >
+                            <Type size={14} className="text-zinc-500" />{" "}
+                            Paragraph
+                          </button>
+                          <button
+                            onMouseDown={(e) => applyBlockFormat(e, "H2")}
+                            className="w-full px-4 py-2.5 text-left text-sm font-semibold text-zinc-400 hover:bg-zinc-700 flex items-center gap-2 transition-colors uppercase tracking-widest"
+                          >
+                            <User size={14} className="text-zinc-500" />{" "}
+                            Character
+                          </button>
+                          <button
+                            onMouseDown={(e) =>
+                              applyBlockFormat(e, "BLOCKQUOTE")
+                            }
+                            className="w-full px-4 py-2.5 text-left text-sm italic text-violet-300 hover:bg-zinc-700 flex items-center gap-2 transition-colors"
+                          >
+                            <Type size={14} className="text-zinc-500" />{" "}
+                            Dialogue
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="w-px h-5 bg-white/10 mx-1"></div>
+                    <ToolButton
+                      icon={AlignLeft}
+                      title="Left to Right"
+                      onClick={(e) => applyDirection(e, "ltr")}
+                    />
+                    <ToolButton
+                      icon={AlignRight}
+                      title="Right to Left"
+                      onClick={(e) => applyDirection(e, "rtl")}
+                    />
+                  </div>
+                  <div className="w-0 h-0 border-l-[6px] border-r-[6px] border-t-[6px] border-l-transparent border-r-transparent border-t-zinc-800/95 relative -top-[1px]"></div>
+                </div>
+              )}
+            </div>
+
+            {/* Teleprompter Fullscreen Mode - Moved outside of the transformed container */}
+            {showTeleprompter && (
+              <div className="fixed inset-0 z-[100] bg-black text-white flex flex-col font-sans animate-scale-in origin-center overflow-hidden">
+                <style>{`
                                 .teleprompter-content p, 
                                 .teleprompter-content div, 
                                 .teleprompter-content blockquote,
@@ -745,39 +1597,115 @@
                                     word-break: break-word !important;
                                 } 
                             `}</style>
-                            <div className="flex items-center justify-between p-4 bg-zinc-950/80 backdrop-blur-md border-b border-white/10 shrink-0 sticky top-0 z-10">
-                                <div className="flex items-center gap-4 sm:gap-8">
-                                    <button onClick={() => setIsPlaying(!isPlaying)} className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-bold transition-all transform hover:scale-105 ${isPlaying ? 'bg-amber-500 hover:bg-amber-400 text-black shadow-[0_0_20px_rgba(245,158,11,0.3)]' : 'bg-white hover:bg-zinc-200 text-black shadow-[0_0_20px_rgba(255,255,255,0.2)]'}`}>
-                                        {isPlaying ? <Pause className="w-5 h-5 fill-black" /> : <Play className="w-5 h-5 fill-black" />} {isPlaying ? 'Pause' : 'Start'}
-                                    </button>
-                                    <div className="hidden sm:flex items-center gap-3 bg-zinc-900 px-4 py-2 rounded-full border border-white/10"><span className="text-zinc-400 text-xs font-bold uppercase tracking-wider">Speed</span><input type="range" min="1" max="10" value={scrollSpeed} onChange={(e) => setScrollSpeed(Number(e.target.value))} className="w-24 accent-white" /></div>
-                                    <div className="hidden md:flex items-center gap-3 bg-zinc-900 px-4 py-2 rounded-full border border-white/10"><span className="text-zinc-400 text-xs font-bold uppercase tracking-wider">Size</span><input type="range" min="32" max="120" value={teleprompterSize} onChange={(e) => setTeleprompterSize(Number(e.target.value))} className="w-24 accent-white" /></div>
-                                </div>
-                                <button onClick={() => { setIsPlaying(false); setShowTeleprompter(false); }} className="p-2.5 text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 rounded-full transition-colors flex items-center gap-2 border border-white/5"><X className="w-5 h-5" /></button>
-                            </div>
-                            
-                            <div ref={teleprompterRef} className="flex-grow overflow-y-auto px-6 md:px-12 py-12 scroll-smooth w-full" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-                                <style>{`::-webkit-scrollbar { display: none; }`}</style>
-                                <div className="w-full max-w-none pb-[70vh]">
-                                    {title && <h1 className="text-zinc-500 mb-16 uppercase tracking-widest border-b border-white/10 pb-6 font-extrabold w-full" dir="auto" style={{ fontSize: `${teleprompterSize * 0.4}px` }}>{title}</h1>}
-                                    <div className="flex flex-col gap-16 w-full">
-                                        {blocks.map((block) => (
-                                            <div key={block.id} className="teleprompter-block w-full">
-                                                {block.title && <h2 className="text-violet-400 font-extrabold mb-6 uppercase tracking-widest w-full" dir="auto" style={{ fontSize: `${teleprompterSize * 0.5}px` }}>[{block.title}]</h2>}
-                                                <div className="teleprompter-content leading-relaxed font-semibold opacity-90 w-full" dir="auto" style={{ fontSize: `${teleprompterSize}px` }} dangerouslySetInnerHTML={{ __html: block.content || '<span class="text-zinc-800">...</span>' }} />
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </>
-            );
-        }
+                <div className="flex items-center justify-between p-4 bg-zinc-950/80 backdrop-blur-md border-b border-white/10 shrink-0 sticky top-0 z-10">
+                  <div className="flex items-center gap-4 sm:gap-8">
+                    <button
+                      onClick={() => setIsPlaying(!isPlaying)}
+                      className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-bold transition-all transform hover:scale-105 ${isPlaying ? "bg-amber-500 hover:bg-amber-400 text-black shadow-[0_0_20px_rgba(245,158,11,0.3)]" : "bg-white hover:bg-zinc-200 text-black shadow-[0_0_20px_rgba(255,255,255,0.2)]"}`}
+                    >
+                      {isPlaying ? (
+                        <Pause className="w-5 h-5 fill-black" />
+                      ) : (
+                        <Play className="w-5 h-5 fill-black" />
+                      )}{" "}
+                      {isPlaying ? "Pause" : "Start"}
+                    </button>
+                    <div className="hidden sm:flex items-center gap-3 bg-zinc-900 px-4 py-2 rounded-full border border-white/10">
+                      <span className="text-zinc-400 text-xs font-bold uppercase tracking-wider">
+                        Speed
+                      </span>
+                      <input
+                        type="range"
+                        min="1"
+                        max="10"
+                        value={scrollSpeed}
+                        onChange={(e) => setScrollSpeed(Number(e.target.value))}
+                        className="w-24 accent-white"
+                      />
+                    </div>
+                    <div className="hidden md:flex items-center gap-3 bg-zinc-900 px-4 py-2 rounded-full border border-white/10">
+                      <span className="text-zinc-400 text-xs font-bold uppercase tracking-wider">
+                        Size
+                      </span>
+                      <input
+                        type="range"
+                        min="32"
+                        max="120"
+                        value={teleprompterSize}
+                        onChange={(e) =>
+                          setTeleprompterSize(Number(e.target.value))
+                        }
+                        className="w-24 accent-white"
+                      />
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setIsPlaying(false);
+                      setShowTeleprompter(false);
+                    }}
+                    className="p-2.5 text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 rounded-full transition-colors flex items-center gap-2 border border-white/5"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+                <div
+                  ref={teleprompterRef}
+                  className="flex-grow overflow-y-auto px-6 md:px-12 py-12 scroll-smooth w-full"
+                  style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+                >
+                  <style>{`::-webkit-scrollbar { display: none; }`}</style>
+                  <div className="w-full max-w-none pb-[70vh]">
+                    {title && (
+                      <h1
+                        className="text-zinc-500 mb-16 uppercase tracking-widest border-b border-white/10 pb-6 font-extrabold w-full"
+                        dir="auto"
+                        style={{ fontSize: `${teleprompterSize * 0.4}px` }}
+                      >
+                        {title}
+                      </h1>
+                    )}
+                    <div className="flex flex-col gap-16 w-full">
+                      {blocks.map((block) => (
+                        <div
+                          key={block.id}
+                          className="teleprompter-block w-full"
+                        >
+                          {block.title && (
+                            <h2
+                              className="text-violet-400 font-extrabold mb-6 uppercase tracking-widest w-full"
+                              dir="auto"
+                              style={{
+                                fontSize: `${teleprompterSize * 0.5}px`,
+                              }}
+                            >
+                              [{block.title}]
+                            </h2>
+                          )}
+                          <div
+                            className="teleprompter-content leading-relaxed font-semibold opacity-90 w-full"
+                            dir="auto"
+                            style={{ fontSize: `${teleprompterSize}px` }}
+                            dangerouslySetInnerHTML={{
+                              __html:
+                                block.content ||
+                                '<span class="text-zinc-800">...</span>',
+                            }}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
+        );
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<App />);
     </script>
-</body>
+  </body>
 </html>
