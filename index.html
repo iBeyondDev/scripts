@@ -170,6 +170,7 @@
         const [settingsFontInput, setSettingsFontInput] = useState("Inter");
         const [settingsFontSizeInput, setSettingsFontSizeInput] = useState(18);
         const fileInputRef = useRef(null);
+        const singleFileInputRef = useRef(null);
 
         // Initial Data Fetching
         useEffect(() => {
@@ -384,6 +385,39 @@
           event.target.value = "";
         };
 
+        const handleImportSingleScript = async (event) => {
+          const file = event.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = async (e) => {
+            try {
+              const importedScript = JSON.parse(e.target.result);
+              if (importedScript.blocks) {
+                const newScript = {
+                  ...importedScript,
+                  id: Date.now().toString(),
+                  createdAt: Date.now(),
+                  updatedAt: Date.now(),
+                };
+                const updatedScripts = [newScript, ...scripts];
+                setScripts(updatedScripts);
+                localStorage.setItem(
+                  "scriptflow_data_react",
+                  JSON.stringify(updatedScripts),
+                );
+                setCurrentView("dashboard");
+                setActiveScriptId(null);
+              } else {
+                alert("Invalid script format.");
+              }
+            } catch (error) {
+              alert("Invalid script file format.");
+            }
+          };
+          reader.readAsText(file);
+          event.target.value = "";
+        };
+
         const activeScript =
           activeScriptId === "new"
             ? {
@@ -439,6 +473,20 @@
                   >
                     <Settings className="w-5 h-5" />
                   </button>
+                  <button
+                    onClick={() => singleFileInputRef.current?.click()}
+                    className="flex items-center gap-2 bg-zinc-800 text-white hover:bg-zinc-700 px-5 py-2.5 rounded-full font-bold transition-all transform hover:scale-105 active:scale-95 text-sm shadow-[0_0_15px_rgba(0,0,0,0.2)] border border-white/5"
+                  >
+                    <Upload className="w-4 h-4" />
+                    <span>Import</span>
+                  </button>
+                  <input
+                    type="file"
+                    accept=".json"
+                    ref={singleFileInputRef}
+                    onChange={handleImportSingleScript}
+                    className="hidden"
+                  />
                   <button
                     onClick={() => setShowPlatformModal(true)}
                     className="flex items-center gap-2 bg-white text-zinc-950 hover:bg-zinc-200 px-5 py-2.5 rounded-full font-bold transition-all transform hover:scale-105 active:scale-95 text-sm shadow-[0_0_20px_rgba(255,255,255,0.15)]"
@@ -770,6 +818,24 @@
                             </>
                           ) : (
                             <>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  const blob = new Blob([JSON.stringify(script, null, 2)], { type: "application/json" });
+                                  const url = URL.createObjectURL(blob);
+                                  const link = document.createElement("a");
+                                  link.href = url;
+                                  link.download = `${script.title || "script_export"}.json`;
+                                  document.body.appendChild(link);
+                                  link.click();
+                                  document.body.removeChild(link);
+                                  URL.revokeObjectURL(url);
+                                }}
+                                className="text-zinc-600 hover:text-indigo-400 transition-colors p-1.5 rounded-lg hover:bg-indigo-400/10"
+                                title="Export Script"
+                              >
+                                <Download className="w-4 h-4" />
+                              </button>
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
@@ -1243,6 +1309,35 @@
                       </span>
                     </div>
                   )}
+                  <button
+                    onClick={() => {
+                      const finalBlocks = blocks.map((b) => {
+                        const el = document.getElementById(b.id);
+                        return { ...b, content: el ? el.innerHTML : b.content };
+                      });
+                      const scriptToExport = script ? {
+                        ...script,
+                        title: title.trim(),
+                        blocks: finalBlocks,
+                      } : {
+                        title: title.trim(),
+                        platform: window.__tempPlatform,
+                        blocks: finalBlocks,
+                      };
+                      const blob = new Blob([JSON.stringify(scriptToExport, null, 2)], { type: "application/json" });
+                      const url = URL.createObjectURL(blob);
+                      const link = document.createElement("a");
+                      link.href = url;
+                      link.download = `${title.trim() || "script_export"}.json`;
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                      URL.revokeObjectURL(url);
+                    }}
+                    className="flex items-center gap-2 bg-indigo-500 hover:bg-indigo-400 text-white px-5 py-2 rounded-full font-bold transition-transform transform hover:scale-105 text-sm shadow-[0_0_15px_rgba(99,102,241,0.4)]"
+                  >
+                    <Download className="w-4 h-4" /> Export
+                  </button>
                   <button
                     onClick={() => setShowTeleprompter(true)}
                     className="flex items-center gap-2 bg-white hover:bg-zinc-200 text-zinc-950 px-5 py-2 rounded-full font-bold transition-transform transform hover:scale-105 text-sm shadow-[0_0_15px_rgba(255,255,255,0.1)]"
