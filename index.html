@@ -154,6 +154,74 @@
         "Comic Sans MS",
       ];
 
+      // --- LOCAL FILE BACKUP HELPERS (File System Access API) ---
+      // These let us keep an actual JSON file on the user's disk in sync
+      // with the app's data, so the data survives browser storage wipes
+      // (Safari ITP, Chrome storage eviction, clearing site data, etc.)
+      const FS_SUPPORTED = typeof window.showSaveFilePicker === "function";
+      const HANDLE_DB_NAME = "scriptflow_handles";
+      const HANDLE_STORE = "handles";
+      const HANDLE_KEY = "backupFile";
+
+      function openHandleDB() {
+        return new Promise((resolve, reject) => {
+          const req = indexedDB.open(HANDLE_DB_NAME, 1);
+          req.onupgradeneeded = () => {
+            req.result.createObjectStore(HANDLE_STORE);
+          };
+          req.onsuccess = () => resolve(req.result);
+          req.onerror = () => reject(req.error);
+        });
+      }
+
+      async function idbGetHandle() {
+        try {
+          const db = await openHandleDB();
+          return await new Promise((resolve, reject) => {
+            const tx = db.transaction(HANDLE_STORE, "readonly");
+            const req = tx.objectStore(HANDLE_STORE).get(HANDLE_KEY);
+            req.onsuccess = () => resolve(req.result || null);
+            req.onerror = () => reject(req.error);
+          });
+        } catch (e) {
+          return null;
+        }
+      }
+
+      async function idbSetHandle(handle) {
+        try {
+          const db = await openHandleDB();
+          return await new Promise((resolve, reject) => {
+            const tx = db.transaction(HANDLE_STORE, "readwrite");
+            tx.objectStore(HANDLE_STORE).put(handle, HANDLE_KEY);
+            tx.oncomplete = () => resolve(true);
+            tx.onerror = () => reject(tx.error);
+          });
+        } catch (e) {
+          return false;
+        }
+      }
+
+      async function idbClearHandle() {
+        try {
+          const db = await openHandleDB();
+          return await new Promise((resolve, reject) => {
+            const tx = db.transaction(HANDLE_STORE, "readwrite");
+            tx.objectStore(HANDLE_STORE).delete(HANDLE_KEY);
+            tx.oncomplete = () => resolve(true);
+            tx.onerror = () => reject(tx.error);
+          });
+        } catch (e) {
+          return false;
+        }
+      }
+
+      async function writeJSONToHandle(handle, dataObj) {
+        const writable = await handle.createWritable();
+        await writable.write(JSON.stringify(dataObj, null, 2));
+        await writable.close();
+      }
+
       function App() {
         const [scripts, setScripts] = useState([]);
         const [globalWPM, setGlobalWPM] = useState(150);
@@ -172,12 +240,120 @@
         const fileInputRef = useRef(null);
         const singleFileInputRef = useRef(null);
 
+        // Local backup file (File System Access API) state
+        const [backupHandle, setBackupHandle] = useState(null);
+        const [backupFileName, setBackupFileName] = useState(null);
+        const [backupStatus, setBackupStatus] = useState("none"); // none | connected | needs-permission | error
+        const [persisted, setPersisted] = useState(null);
+
+        const buildBackupPayload = (
+          scriptsData,
+          wpm,
+          font,
+          fontSize,
+        ) => ({
+          scripts: scriptsData,
+          settings: { globalWPM: wpm, defaultFont: font, defaultFontSize: fontSize },
+          exportDate: new Date().toISOString(),
+        });
+
+        const writeBackup = async (scriptsData, wpm, font, fontSize, handleOverride) => {
+          const handle = handleOverride || backupHandle;
+          if (!handle) return;
+          try {
+            const perm = await handle.queryPermission({ mode: "readwrite" });
+            if (perm !== "granted") {
+              setBackupStatus("needs-permission");
+              return;
+            }
+            await writeJSONToHandle(
+              handle,
+              buildBackupPayload(scriptsData, wpm, font, fontSize),
+            );
+            setBackupStatus("connected");
+          } catch (e) {
+            console.error("Backup write failed:", e);
+            setBackupStatus("error");
+          }
+        };
+
+        const linkBackupFile = async () => {
+          if (!FS_SUPPORTED) return;
+          try {
+            const handle = await window.showSaveFilePicker({
+              suggestedName: "scriptflow_backup.json",
+              types: [
+                {
+                  description: "JSON Backup",
+                  accept: { "application/json": [".json"] },
+                },
+              ],
+            });
+            await idbSetHandle(handle);
+            setBackupHandle(handle);
+            setBackupFileName(handle.name);
+            setBackupStatus("connected");
+            await writeBackup(scripts, globalWPM, defaultFont, defaultFontSize, handle);
+          } catch (e) {
+            if (e.name !== "AbortError") console.error(e);
+          }
+        };
+
+        const reconnectBackupFile = async () => {
+          if (!backupHandle) return;
+          try {
+            const perm = await backupHandle.requestPermission({
+              mode: "readwrite",
+            });
+            if (perm === "granted") {
+              setBackupStatus("connected");
+              await writeBackup(scripts, globalWPM, defaultFont, defaultFontSize);
+            } else {
+              setBackupStatus("needs-permission");
+            }
+          } catch (e) {
+            console.error(e);
+            setBackupStatus("error");
+          }
+        };
+
+        const unlinkBackupFile = async () => {
+          await idbClearHandle();
+          setBackupHandle(null);
+          setBackupFileName(null);
+          setBackupStatus("none");
+        };
+
         // Initial Data Fetching
         useEffect(() => {
-          if (navigator.storage && navigator.storage.persist) {
-            navigator.storage.persist().catch(console.error);
-          }
-          
+          (async () => {
+            if (navigator.storage && navigator.storage.persist) {
+              try {
+                const granted = await navigator.storage.persist();
+                setPersisted(granted);
+              } catch (e) {
+                setPersisted(false);
+              }
+            }
+
+            // Try to reconnect a previously linked backup file
+            if (FS_SUPPORTED) {
+              const handle = await idbGetHandle();
+              if (handle) {
+                setBackupHandle(handle);
+                setBackupFileName(handle.name);
+                try {
+                  const perm = await handle.queryPermission({
+                    mode: "readwrite",
+                  });
+                  setBackupStatus(perm === "granted" ? "connected" : "needs-permission");
+                } catch (e) {
+                  setBackupStatus("needs-permission");
+                }
+              }
+            }
+          })();
+
           const savedScripts = localStorage.getItem("scriptflow_data_react");
           if (savedScripts) setScripts(JSON.parse(savedScripts));
 
@@ -201,6 +377,19 @@
             setSettingsFontSizeInput(parseInt(savedFontSize, 10));
           }
         }, []);
+
+        // Keep the linked backup file in sync with app data any time it
+        // changes, regardless of which code path caused the change
+        // (manual save, autosave, delete, restore, import, settings, etc).
+        const backupDebounceRef = useRef(null);
+        useEffect(() => {
+          if (!backupHandle || backupStatus !== "connected") return;
+          if (backupDebounceRef.current) clearTimeout(backupDebounceRef.current);
+          backupDebounceRef.current = setTimeout(() => {
+            writeBackup(scripts, globalWPM, defaultFont, defaultFontSize);
+          }, 800);
+          return () => clearTimeout(backupDebounceRef.current);
+        }, [scripts, globalWPM, defaultFont, defaultFontSize, backupHandle, backupStatus]);
 
         const handleSaveScript = (scriptData, close = true) => {
           const isExisting = activeScriptId && activeScriptId !== "new";
@@ -681,6 +870,72 @@
                           className="hidden"
                         />
                       </div>
+                    </div>
+
+                    <div className="border-t border-white/10 pt-6 mt-2">
+                      <label className="block text-sm font-semibold text-zinc-400 mb-1 flex items-center gap-2">
+                        <Save className="w-4 h-4 text-violet-400" /> Auto-Save
+                        to Disk
+                      </label>
+                      <p className="text-xs text-zinc-500 mb-3 leading-relaxed">
+                        Browsers can wipe local data after inactivity. Link a
+                        real file on your computer and every change will be
+                        written to it automatically, so your scripts are safe
+                        even if the browser clears its storage.
+                      </p>
+
+                      {!FS_SUPPORTED ? (
+                        <div className="text-xs text-amber-400/90 bg-amber-500/10 border border-amber-500/20 rounded-xl px-4 py-3 leading-relaxed">
+                          Your browser doesn't support auto-saving to disk
+                          (this works in Chrome, Edge, and other Chromium
+                          browsers). Please use{" "}
+                          <span className="font-semibold">Backup</span> above
+                          regularly to avoid losing work.
+                        </div>
+                      ) : backupStatus === "connected" ? (
+                        <div className="flex items-center justify-between bg-green-500/10 border border-green-500/20 rounded-xl px-4 py-3">
+                          <div className="flex items-center gap-2 text-sm text-green-400 font-medium truncate">
+                            <CheckCircle2 className="w-4 h-4 shrink-0" />
+                            <span className="truncate">
+                              Syncing to {backupFileName}
+                            </span>
+                          </div>
+                          <button
+                            onClick={unlinkBackupFile}
+                            className="text-xs text-zinc-500 hover:text-rose-400 font-semibold shrink-0 ml-2"
+                          >
+                            Unlink
+                          </button>
+                        </div>
+                      ) : backupStatus === "needs-permission" ? (
+                        <div className="flex items-center justify-between bg-amber-500/10 border border-amber-500/20 rounded-xl px-4 py-3">
+                          <span className="text-sm text-amber-400 font-medium truncate">
+                            Reconnect {backupFileName}
+                          </span>
+                          <button
+                            onClick={reconnectBackupFile}
+                            className="text-xs bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-semibold px-3 py-1.5 rounded-lg shrink-0 ml-2"
+                          >
+                            Allow Access
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={linkBackupFile}
+                          className="w-full flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-500 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors"
+                        >
+                          <Save className="w-4 h-4" /> Link a Backup File
+                        </button>
+                      )}
+
+                      {persisted === false && (
+                        <p className="text-[11px] text-zinc-500 mt-3 leading-relaxed">
+                          Note: this browser did not grant persistent
+                          storage, which makes local data more likely to be
+                          cleared automatically. Linking a backup file above
+                          is the most reliable way to keep your scripts safe.
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
