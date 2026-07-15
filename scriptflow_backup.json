@@ -1,0 +1,178 @@
+{
+  "scripts": [
+    {
+      "id": "1783744234086",
+      "title": "PS1 Graphics",
+      "platform": "tiktok",
+      "blocks": [
+        {
+          "id": "b1",
+          "title": "Hook",
+          "content": "ف عشان هيك ... لو عمرك شفت العاب PS1 ... ف رح تلاحظ بانه فيه بكل العابه اهتزاز او Jitter بالمجسمات بالالعاب ... عمرك سألت حالك شو سببه ؟&nbsp;<div><br></div><div>ف كل مجسمات ال 3d اللي بالالعاب تتكون من اشي اسمه Vertcies واللي هم هذول النقاط واللي يكونو المجسم ... واللي تحريكهم يسوي لنا انميشن الشخصيات سواء عن طريق Rig او الخ ...</div><div><br></div><div>ولكن الPS1 بسبب امكانياته المحدوده ما كان يقدر يحسب الا ارقام صحيحه ما يقدر يحسب كسور ... بمعنى انه بالوضع الطبيعي ال Vertcies او هذول النقاط يقدرو يكونو باي مكان ... ولكن بال PS1 هذول النقاط يكونو بس بارقام صحيحه واللي يخليهم يقفزو من مكان للثاني ...&nbsp;</div><div><br></div><div>واللي يهطيني الشكل الايقوني لالعاب ال PS1 ...&nbsp;</div>"
+        }
+      ],
+      "updatedAt": 1783769549886,
+      "createdAt": 1783744234087
+    },
+    {
+      "id": "1783740396239",
+      "title": "Raytracing VS Projctile",
+      "platform": "tiktok",
+      "blocks": [
+        {
+          "id": "b1",
+          "title": "Hook",
+          "content": "لو كنت تسوي لعبة شوتر ... فهل عمرك سألت حالك أيش أفضل طريقه عشان تخلي الطلق يصولو من السلاح للعدو !&nbsp;<div>ف الطريقتين الاساسيات اللي يستخدموهم بتطوير الالعاب .. عشان يعرفو وين انت قاعد تطلق .. هم ال Raycasting او ال Projectiles .... واللي يرجع ل حسب احتياجك ...</div><div><br></div><div>ف ال Raycasting هو عباره عن انك تطلق ليزر من سلاحك للمكان اللي انت مصووب عليه ... عشان تعرف اذا اصبت اشي او لا وتدمجه ... واللي من فوائده انه الطلقه مباشره ومافيها تأخير ... واللي ينفع للالعاب اللي جدا Competative مثل فالورانت او CS&nbsp;</div><div><br></div><div>والطريقه الثانيه هي ال Projctile .... واللي هي ببساطه انه الطلقه تكون فيزيائيه فعلاا .. بمعنى انه بس تطلق نرسبن أشي واللي رح يروح ويتحرك واذا تلامس مع شي ثاني رح يدمجه .... واللي ينفع للالعاب الواقعيه او اللي فيها فيزيائيه للطلقه مثل Battilefield او Squad .. واللي يخلي الطلقه تاثر عليها الجاذبيه او الهوا وبرضو تاخذ وقت لتوصل للهدف ... لانها اشي فيزيائي ...&nbsp;</div>"
+        }
+      ],
+      "updatedAt": 1783743937104,
+      "createdAt": 1783740396239
+    },
+    {
+      "id": "1783223055278",
+      "title": "Steam Story",
+      "platform": "youtube",
+      "blocks": [
+        {
+          "id": "b1",
+          "title": "intro - Why is steam so goated",
+          "content": "------ INTRO ------<div dir=\"rtl\" style=\"text-align: right;\"><br></div>"
+        },
+        {
+          "id": "b-1783551680433",
+          "title": "How steam started",
+          "content": ""
+        },
+        {
+          "id": "b-1783551715096",
+          "title": "reasons steam is the best",
+          "content": ""
+        }
+      ],
+      "updatedAt": 1784121763605,
+      "createdAt": 1783223055278
+    },
+    {
+      "id": "1783032472645",
+      "title": "Bots Overtook The Internet",
+      "platform": "tiktok",
+      "blocks": [
+        {
+          "id": "b1",
+          "title": "Hook",
+          "content": "رسمياا ولاول مره البوتات على الانترنت اكثر من البشر ... بحسب تويته للرئيس التنفيذي ل Cloudflare ... الTraffic من البوتات على الانترنت صار اكثر من البشر ...تقريبا 57.5% من الحركه على الانترنت سببها البوتات وبس 42.5% من الحركه هي للبشر ... واللي معناه انه احتمال كبير التعليق العنصري او السيء اللي تشوفه في احتمال كبير انه يكون مو من انسان&nbsp; ... واللي للامانه يفسر كثير من التعليقات الغبيه على الانترنت ... ف اعتقد نظرية الانترنت الميت او ال Dead Internet Theory صارت حقيقيه ...&nbsp;"
+        },
+        {
+          "id": "b-1783032430147",
+          "title": "Sources",
+          "content": "https://www.forbes.com/sites/josipamajic/2026/06/04/bots-now-outnumber-humans-online-and-the-internet-was-never-built-for-this/<div><br></div><div>https://x.com/eastdakota/status/2062212701414187452</div>"
+        }
+      ],
+      "updatedAt": 1783549800018,
+      "createdAt": 1783032472646
+    },
+    {
+      "id": "1783031691307",
+      "title": "Ram Prices Not Cuz Of AI",
+      "platform": "tiktok",
+      "blocks": [
+        {
+          "id": "b1",
+          "title": "Hook",
+          "content": "احتمال يكون ارتفاع سعر الرامات مو بس بسبب ال Ai .... اوك في اشخاص وبزنسس رفعو قضيه على الشركات اللي يصنعو الرامات واللي هم 3 شركات بس&nbsp;&nbsp;<span style=\"color: rgb(255, 255, 255); font-family: Georgia, Times, &quot;Times New Roman&quot;, serif; font-size: 18px; background-color: rgb(28, 26, 26);\">Samsung, SK Hynix, and Micron</span>&nbsp;بانهم قاعدين يستغلو السوق عشان يرفعو الاسعار .... هذول ال 3 شركات مسؤولين عن 90% من كل تصنيع الرامات بالعالم ...&nbsp;<div>واللي القضيه تقوله بانه بالرغم من الطلب الخيالي على الرامات خصوصا السريعه اللي تستخدم بالData Centers ... الا انه هذول الشركات قللو من انتاجهم مو العكس ... واللي خلا سعر الرامات يرتفع 700% واللي معناه بانهم قاعدين يغرقو بالمصاري حرفيا ... والغريب انه هاي مش اول مره يسوو هاي الحركات ال 3 شركات هذول عملو نفس الحركه بين 1998 وال 2002 رفعو الاسعار وبرضو تغرمو ....</div>"
+        },
+        {
+          "id": "b-1783033540836",
+          "title": "Sources",
+          "content": "https://www.polygon.com/ram-manufacturers-sued-supply-price-fixing/"
+        }
+      ],
+      "updatedAt": 1783187140548,
+      "createdAt": 1783031691307
+    },
+    {
+      "id": "1783030274377",
+      "title": "PS5 Going Digital Only",
+      "platform": "tiktok",
+      "blocks": [
+        {
+          "id": "b1",
+          "title": "Hook",
+          "content": "ما رح تمتلك أي أشي ورح تكون مبسوط ... رسميا من 2028 بلايستيشن رح يوقفو بيع الاشرطه او السيديهات ... والطريقه الوحده اللي رح تشتري فيها العاب هي عن طريق متجرهم ... واللي هي لحظه حزينه بعالم الالعاب خصوصا للكونسولز ... لانه ببساطه ماعاد بيكون في اشي اسمه تشتري شريط مستعمل عشان يكون ارخص ... ولسا الاسوء هو انه الشركات اثبتت لنا بانه الاشي اللي تشتريه مو ملك الك ... ف حتى لو انك مشتري اي لعبه او فلم او مسلسل ف هو مو ملك الك و يقدرو ياخذوه منك باي لحظه ... والاسوء من هيك انه الكونسولز مو مثل ال PC ... اذا ما عجبك Epic تقدر تتركهم وتروح لستيم ... ما عجبك الستور تبع بلايستيشن .. حظ اوفر اعتقد ...&nbsp;<div>ف مثل ما يقولو أذا المشترى مو تملك معناها القرصنه مو سرقه ...&nbsp;</div>"
+        }
+      ],
+      "updatedAt": 1783203921117,
+      "createdAt": 1783030274377
+    },
+    {
+      "id": "1780410978132",
+      "title": "Comments #5",
+      "platform": "youtube",
+      "blocks": [
+        {
+          "id": "b1",
+          "title": "Hook",
+          "content": "بالمقطع الماضي طلبت منكم تكتبولي عشان اسوي لعبه من تعليقاتكم .. واللي هي السلسله اللي تكتبو لي اقتراحات واحاول ابرمجهم جوا لعبه .. .. واللي اعتقد صارلنا شوي ما سويناها السلسله ... شوي 3 سنين يمكن ... ف اعتقد صار الوقت نرجعها ...<div><br></div><div>ف الله يستر خلينا نشوف أيش التعليقات اللي كاتبينها ...&nbsp;</div><div><br></div><div>ولكن قبلها كان لازم اقرر أيش نظام اللعبه ... يعني هل هي شوتر ستراتيجيه تلبيس بنات الخ ...</div><div><br></div><div><br></div>"
+        },
+        {
+          "id": "b-1780423259134",
+          "title": "فيديو 1",
+          "content": "<div style=\"--tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-pan-x: ; --tw-pan-y: ; --tw-pinch-zoom: ; --tw-scroll-snap-strictness: proximity; --tw-gradient-from-position: ; --tw-gradient-via-position: ; --tw-gradient-to-position: ; --tw-ordinal: ; --tw-slashed-zero: ; --tw-numeric-figure: ; --tw-numeric-spacing: ; --tw-numeric-fraction: ; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / 0.5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-shadow-colored: 0 0 #0000; --tw-blur: ; --tw-brightness: ; --tw-contrast: ; --tw-grayscale: ; --tw-hue-rotate: ; --tw-invert: ; --tw-saturate: ; --tw-sepia: ; --tw-drop-shadow: ; --tw-backdrop-blur: ; --tw-backdrop-brightness: ; --tw-backdrop-contrast: ; --tw-backdrop-grayscale: ; --tw-backdrop-hue-rotate: ; --tw-backdrop-invert: ; --tw-backdrop-opacity: ; --tw-backdrop-saturate: ; --tw-backdrop-sepia: ; --tw-contain-size: ; --tw-contain-layout: ; --tw-contain-paint: ; --tw-contain-style: ;\">ف بعد ما سويت الاعب وانا قاعد اجرب ..(ركضه غريبه).. ما اعتقد انها فكره كويسه للامانه ...</div><div style=\"--tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-pan-x: ; --tw-pan-y: ; --tw-pinch-zoom: ; --tw-scroll-snap-strictness: proximity; --tw-gradient-from-position: ; --tw-gradient-via-position: ; --tw-gradient-to-position: ; --tw-ordinal: ; --tw-slashed-zero: ; --tw-numeric-figure: ; --tw-numeric-spacing: ; --tw-numeric-fraction: ; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / 0.5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-shadow-colored: 0 0 #0000; --tw-blur: ; --tw-brightness: ; --tw-contrast: ; --tw-grayscale: ; --tw-hue-rotate: ; --tw-invert: ; --tw-saturate: ; --tw-sepia: ; --tw-drop-shadow: ; --tw-backdrop-blur: ; --tw-backdrop-brightness: ; --tw-backdrop-contrast: ; --tw-backdrop-grayscale: ; --tw-backdrop-hue-rotate: ; --tw-backdrop-invert: ; --tw-backdrop-opacity: ; --tw-backdrop-saturate: ; --tw-backdrop-sepia: ; --tw-contain-size: ; --tw-contain-layout: ; --tw-contain-paint: ; --tw-contain-style: ;\"><br style=\"--tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-pan-x: ; --tw-pan-y: ; --tw-pinch-zoom: ; --tw-scroll-snap-strictness: proximity; --tw-gradient-from-position: ; --tw-gradient-via-position: ; --tw-gradient-to-position: ; --tw-ordinal: ; --tw-slashed-zero: ; --tw-numeric-figure: ; --tw-numeric-spacing: ; --tw-numeric-fraction: ; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / 0.5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-shadow-colored: 0 0 #0000; --tw-blur: ; --tw-brightness: ; --tw-contrast: ; --tw-grayscale: ; --tw-hue-rotate: ; --tw-invert: ; --tw-saturate: ; --tw-sepia: ; --tw-drop-shadow: ; --tw-backdrop-blur: ; --tw-backdrop-brightness: ; --tw-backdrop-contrast: ; --tw-backdrop-grayscale: ; --tw-backdrop-hue-rotate: ; --tw-backdrop-invert: ; --tw-backdrop-opacity: ; --tw-backdrop-saturate: ; --tw-backdrop-sepia: ; --tw-contain-size: ; --tw-contain-layout: ; --tw-contain-paint: ; --tw-contain-style: ;\"></div><div style=\"--tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-pan-x: ; --tw-pan-y: ; --tw-pinch-zoom: ; --tw-scroll-snap-strictness: proximity; --tw-gradient-from-position: ; --tw-gradient-via-position: ; --tw-gradient-to-position: ; --tw-ordinal: ; --tw-slashed-zero: ; --tw-numeric-figure: ; --tw-numeric-spacing: ; --tw-numeric-fraction: ; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / 0.5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-shadow-colored: 0 0 #0000; --tw-blur: ; --tw-brightness: ; --tw-contrast: ; --tw-grayscale: ; --tw-hue-rotate: ; --tw-invert: ; --tw-saturate: ; --tw-sepia: ; --tw-drop-shadow: ; --tw-backdrop-blur: ; --tw-backdrop-brightness: ; --tw-backdrop-contrast: ; --tw-backdrop-grayscale: ; --tw-backdrop-hue-rotate: ; --tw-backdrop-invert: ; --tw-backdrop-opacity: ; --tw-backdrop-saturate: ; --tw-backdrop-sepia: ; --tw-contain-size: ; --tw-contain-layout: ; --tw-contain-paint: ; --tw-contain-style: ;\">قررت انها&nbsp; Fighting game وتقدر تسوي Roll زي العاب السولز ... بمعنى انه باللحظه اللي تسوي فيها Roll ... فالااعداء ما رح يقدرو يدمجوك وانت مسوي Roll ...&nbsp;</div><div style=\"--tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-pan-x: ; --tw-pan-y: ; --tw-pinch-zoom: ; --tw-scroll-snap-strictness: proximity; --tw-gradient-from-position: ; --tw-gradient-via-position: ; --tw-gradient-to-position: ; --tw-ordinal: ; --tw-slashed-zero: ; --tw-numeric-figure: ; --tw-numeric-spacing: ; --tw-numeric-fraction: ; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / 0.5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-shadow-colored: 0 0 #0000; --tw-blur: ; --tw-brightness: ; --tw-contrast: ; --tw-grayscale: ; --tw-hue-rotate: ; --tw-invert: ; --tw-saturate: ; --tw-sepia: ; --tw-drop-shadow: ; --tw-backdrop-blur: ; --tw-backdrop-brightness: ; --tw-backdrop-contrast: ; --tw-backdrop-grayscale: ; --tw-backdrop-hue-rotate: ; --tw-backdrop-invert: ; --tw-backdrop-opacity: ; --tw-backdrop-saturate: ; --tw-backdrop-sepia: ; --tw-contain-size: ; --tw-contain-layout: ; --tw-contain-paint: ; --tw-contain-style: ;\"><br></div><div style=\"--tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-pan-x: ; --tw-pan-y: ; --tw-pinch-zoom: ; --tw-scroll-snap-strictness: proximity; --tw-gradient-from-position: ; --tw-gradient-via-position: ; --tw-gradient-to-position: ; --tw-ordinal: ; --tw-slashed-zero: ; --tw-numeric-figure: ; --tw-numeric-spacing: ; --tw-numeric-fraction: ; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / 0.5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-shadow-colored: 0 0 #0000; --tw-blur: ; --tw-brightness: ; --tw-contrast: ; --tw-grayscale: ; --tw-hue-rotate: ; --tw-invert: ; --tw-saturate: ; --tw-sepia: ; --tw-drop-shadow: ; --tw-backdrop-blur: ; --tw-backdrop-brightness: ; --tw-backdrop-contrast: ; --tw-backdrop-grayscale: ; --tw-backdrop-hue-rotate: ; --tw-backdrop-invert: ; --tw-backdrop-opacity: ; --tw-backdrop-saturate: ; --tw-backdrop-sepia: ; --tw-contain-size: ; --tw-contain-layout: ; --tw-contain-paint: ; --tw-contain-style: ;\">وبعدها عشان الاعب يقدر يضرب او يهاجم ... كان عندي فكره مبدئيه واللي هي انه يككون في نوعين هجوم للاعب ... واحد يكون Light يعني خفيف ... واللي سويت حطيت له انميشن ... وبرضو هجوم ثاني اثقل وابطئ .. واللي المفروض يكون اما Range يعني اضرب فيه من بعيد او Area effect بمنعنى يأثر بمدى معين ... ولكن هذا خليه لبعدين نرجع له ونقرر ...</div><div style=\"--tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-pan-x: ; --tw-pan-y: ; --tw-pinch-zoom: ; --tw-scroll-snap-strictness: proximity; --tw-gradient-from-position: ; --tw-gradient-via-position: ; --tw-gradient-to-position: ; --tw-ordinal: ; --tw-slashed-zero: ; --tw-numeric-figure: ; --tw-numeric-spacing: ; --tw-numeric-fraction: ; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / 0.5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-shadow-colored: 0 0 #0000; --tw-blur: ; --tw-brightness: ; --tw-contrast: ; --tw-grayscale: ; --tw-hue-rotate: ; --tw-invert: ; --tw-saturate: ; --tw-sepia: ; --tw-drop-shadow: ; --tw-backdrop-blur: ; --tw-backdrop-brightness: ; --tw-backdrop-contrast: ; --tw-backdrop-grayscale: ; --tw-backdrop-hue-rotate: ; --tw-backdrop-invert: ; --tw-backdrop-opacity: ; --tw-backdrop-saturate: ; --tw-backdrop-sepia: ; --tw-contain-size: ; --tw-contain-layout: ; --tw-contain-paint: ; --tw-contain-style: ;\"><br></div>"
+        },
+        {
+          "id": "b-1780423492558",
+          "title": "فيديو 3",
+          "content": "وبرضو سويت نظام هيلث ودامج اقدر اركبه على الاعداء .. عشان اقدر ادمجهم واقتلهم وبرضو يصيرلهم knockback ...<div><br></div><div>| كاميرا |-&nbsp; &nbsp; ولكن يكفي تجهيزات للعبه نفسها .. هسا صار وقت نقرأ وننفذ من التعليقات ... ف اول تعليق يقول .. خلي الاعب قروي ماينكرافت وخلي ضربته همممم .. اوك&nbsp; |-</div><div><br></div><div>ف اول اشي دورته مجسم للقروي من Sketchfab ... وبعده ااخذته وسويتله Rigging عشان نقدر نحركه ونركبه على الاعب تبعنا ...&nbsp;</div><div><br></div><div>ودخلته على اللعبه وصرنا نلعبه فيه .... وحتى نقدر نضرب فيه والخ ...</div><div>&nbsp;</div><div>وبرضو سويت هيلث بار للاعب .. عشان ينقص ..ويموت...</div><div><br></div><div>| كاميرا |- حط محمد عبده يعطي عيديات وتشتري منه ... اوك رح نحط محمد عبده ك بياع باللعبه اعتقد... احم مثل ما انتو شايفين هذا المقطع كان المفروض ينزل بعد عيد الفطر... ما اعتقد اني تاخرت&nbsp; |-</div><div><br></div><div>ف جبت مجسم شخصيه ... وحطيت عليها تكستشر وجه ابو نوره .... وسويت له Rigging وانميشن ... واضفته على اللعبه ... ولكنه ما رح يسوي أشي حالياا .. لاني مدري شو رح يبيع لسا .. ف رح نرجع له بعد شوي ....</div><div><br></div><div><span style=\"background-color: transparent;\">| كاميرا |-</span><span style=\"background-color: transparent;\"> </span>كرسي ماسك سلاح ... اووك صار وقت نضيف أشهر كرسي تعرفه البشريه ... |-</div><div><br></div><div>ف اول اشي رحت جبت محسم للكرسي .. واللي ابدا ما كان صعب لانه يمكن هذا اشهر اشي بالكوكب ... ويمكن هذا ثاني اكثر اشي اسمتعت وانا اسوي بهذا المقطع ... ولكن هذا مجرد مجسم ف هسا صار لازم نسويله انميشن ...</div><div><br></div><div>ف اخذته لبلندر ... واول شي سويتله Rigging عشان اقدر احركه واسوي الانميشن بنفسي ... وبس صرنا نقدر نحركه ... سويتله كم انميشن .. واللي هم انميشن مشي للكرسي ... وبرضو انميشن للكرسي وهو يضرب ... عشان لما اضيفه ك عدو ...</div><div><br></div><div>واخذته ع المحرك ... وخليته يسوي نافيقيشن ويلحق ورا الاعب ... واللي لسبب ما شكله جدا يضحك ما اعرف ليش ...&nbsp;</div><div><br></div><div>ولكن ما رح يكون عدو اذا ما قدر يضربك ... ف عشان هيك خليته بس يقرب منك ويلزق رح يقدر يضربك ... واللي رح يدمجك وينقص من الهلث تبعك&nbsp; ...&nbsp;</div><div><br></div><div>وبرضو انت لازم تقدر تضرب الاعداء ف سويت لهم هيلث ... ورح تقدر تدمجهم عشان تتخلص منهم ...&nbsp;</div><div><br></div><div>والهلث تبعك بس ينقص رج يرجع يتعبى لحاله اذا قعدت فتره ما تدمجت عشان تقدر ترجع تهيل ....</div><div><br></div><div><br></div>"
+        },
+        {
+          "id": "b-1781345932814",
+          "title": "",
+          "content": "<div>&nbsp;ولكن لو انت حاب تتعلم تطوير العاب من الصفر وبدون اي خبره سابقه وتبلش تسوي افكارك ك العاب... ف عندي لك الحل لانه هذا بالضبط اللي راح اعلمك اياه الكورس اللي انا سويته&nbsp; .... واللي&nbsp;<span style=\"background-color: transparent;\">راح نسوي فيه مع بعض ثلاث العاب من الصفر حتى تتعلم كيف تطور العابك الخاصه ... فايش تستنى الحق على الخصم لانه الرابط راح يكون موجود تحت بالوصف&nbsp;</span></div>"
+        },
+        {
+          "id": "b-1781341701755",
+          "title": "فيديو 4",
+          "content": "تمام وشفتو الانميشن اللي أضفته ببداية اللعبه ع اساس انه يكون هجوم ثاني ... ف بلشت اسويه ... بانه يكون هجوم اوسع عشان لو تجمعو عليك الاعداء يعني ... ف يكون Area Effect ... ويدمج كل أشي حولك ... وبرضو يكون له Cool Down ... عشان ما تقدر تسوي له سبام كل شوي&nbsp; ...<div><br></div>"
+        },
+        {
+          "id": "b-1781346678202",
+          "title": "فيديو 5",
+          "content": "| كاميرا |- سوي اذا متت تطلع لك الشاشه جقت ماينكرافت .. اوك |-&nbsp;<div><br></div><div>اوك اول أشي بس تموت رح تطلع لك القائمه تبع ماينكرافت .. واللي قتدر ترسبن او تطلع برا ... ولكن الجزء الثاني كيف يموت الاعب بماينكراف واللي هو .. هيك على جنب ... ف برضو سويته بس تموت ...</div><div><br></div><div>| كاميرا |- الرومانسيه الجلوي ... واات |-</div><div><br></div><div>| كاميرا |- خلي احداث اللعبه تكون على القمر |-</div><div><br></div><div>تمااام ... اول أشي غيرت المكان للقمر .. وحتى ال Skybox لاشي يشبه الفضاء اكثر ... ونقصت الجاذبيه عشان تبين بانه احنا ع القمر ...</div><div><br></div><div><div><br></div></div>"
+        },
+        {
+          "id": "b-1781347242996",
+          "title": "فيديو 6",
+          "content": "| كاميرا |- حط بلعبتك الجايه باص كوستر البقعه صويلح ... ههههه اوك .. للي ما يعرف بالاردن هذول باصات الكوستر واللي مشهورين بانه غالبا رح تموت من سواقتهم .. والمجوز الساعه 7 الصبح ... وبرضو الكنترول اللي رح يضل يصيح عليك |-<div><br></div><div>ف عشان نضيفه على اللعبه او أشي جبت مجسم كوستر عشان نقدر نستخدمه ك عدو ... ولكن ما ودي بانه يكون عدو عادي بس يدعسك ... ف عشان اخلي شكله احسن بلشت اسويله Rigging واضيفله انميشن ...&nbsp;</div><div><br></div><div>وبراسي ودي هجومه يكون كرتوني زي الثور يعني على قسمين .. القسم الاول يسوي Charge للهجوم ... والقسم الثاني يضل مندفع باتجهاك يهاجمك ...</div><div><br></div><div>ف سويت انميشنين واحد وهو يجهز .. والثاني وهو منطلق عليك ...</div><div><br></div><div>وبعدين اخذته للمحرك ... واللي بالبدايه كان يهرب مني لسبب ما .. وبعدين يسوي لي Stalking ...&nbsp;</div><div><br></div><div>وبعدها واخيراا صار يهاجم بالضبط زي ما وودي اياه .. ف&nbsp; رح يجهز حاله ويسوي Charge .. بعدين ينطلق بجهتك يحاول يدعسك ... واللي تقدر تسوي له Doge طبعا....</div><div><br></div><div>واللي رح تقدر انت تدمجه عشان تقتله .. ولكن حاول ما تصير قدامه لانه حرفيا رح يشيل نص هيلثك بضربه وحده ... واللي يخوف اكثر هو لما يكون في اكثر من واحد مع بعض ...</div><div><br></div><div><br></div>"
+        },
+        {
+          "id": "b-1781348377693",
+          "title": "فيديو 7",
+          "content": "وبرضو أضفت له بارتكلز نار تاثير له لما ينطلق عليك .."
+        },
+        {
+          "id": "b-1781348386554",
+          "title": "فيديو 8",
+          "content": "| كاميرا |- خلي سلحفاه تلحق الاعب .. اوك هذا اللي كنت رح اسويه للامانه ... ولكن جتني فكره احسن ... تعرفو الميم او الThought experiment تبعت الحلزونه او ال Immortal snail ... واللي تقول بانه تصير ما تموت وغني ولكن بشرط في حلزونه خالده دائما تعرف مكانك وقاعده تزحف باتجاهك وين ما تروح ا تسافر رح تضل للابد تلحقك .. ومجرد ما تلمسك تموت ... واللي طبعاا صارت ميم ما يموت |-<div><br></div><div>ف قررت أضيفها على اللعبه ... ولكن باختلافات بسيطه ... ف اول اشي جبت مجسم حلزونه ... وخليتها تضل تلحق وراك باللعبه وين ما تروح ... ولكن الفرق بانه أذا لمستك الحلزونه ف قيم اوفر ... اللعبه رح تبطل تفتح على جهازك ... حتى لو تطلع من اللعبه وترجع تدخلها ما رح ينفع الموضوع خلص اذا لمستك الحلزونه ....&nbsp;</div><div><br></div><div>| كاميرا |- ضيف شخصية ارثر مورغن يرقص اذا افكت |-</div><div><br></div><div>ف اول أشي جبت ارثر مورغن وهو يرقص ... وبعدها لو قعدت باللعبه كم ثانيه ما تتحرك ف ..... رح يطلعلك أرثر مورغن يرقصلك ... لحد ما تتحرك طبعاا ف رح يختفي بعدهاا ...</div><div><br></div><div>| كاميرا |- خلي الاعب يرمي طائره مسيره |-</div><div><br></div><div>اوك اول اشي جبت مجسم مسيره ... ولكن الهدف انها هي تكون عدو مو انت ترميها ... ف اول اشي رح تضل تمشي باتجاه الاعب .... وبس تقرب من الاعب بمسافه معينه رح تنزل على مكانه ...&nbsp;</div><div><br></div><div>وخليتها أول ما تنزل ع الارض رح تنفجر وتدمج الاعب أذاا كان قريب من الانفجار ...</div><div><br></div><div>| كاميرا |- سوي تاجر تقدر تشتري منه بطاريق تساعدك باللعبه |-</div><div><br></div><div>اوك طبعا مين في تاجر احسن من ابو نوره اللي أضفناااه ببداية اللعبه ... ف عشان هيك حطيت له بوث صغير قدااامه ...وفيه شوية بطاريق عشان يبيعهم ...</div><div><br></div><div>وخليت بس تقرب منه رح يطلع لك خيار عشان تقدر تشتري منه بطاريق .... واللي ما يسوو شي ..&nbsp; ف خليتهم يبلشو يلحقو ووراك ... واللي عشان تبلش تسوي جيش منهم ... ولكن ما عجبني انهم جامدين شوي ... ف سويت لهم انميشن بسيط .. واللي هيك احسن ...</div><div><br></div><div>والفائده االلي رح يقدموها هذول البطاريق .. انه بس يقرب منك عدو رح يروحو عليه وينفجرو ...</div><div><br></div><div><br></div>"
+        },
+        {
+          "id": "b-1781350773418",
+          "title": "فيديو 9",
+          "content": "<div>وخليت في كوينز بكل مره تقتل فيها عدوو .. عشان تقدر تشتري فيهم البطاريق بعدين</div><div><br></div>|<span style=\"background-color: transparent;\">&nbsp;كاميرا |- ماعندي فكره بس طلعني ... اوك اطلع برا |-</span><div><div><br></div><div>| كاميرا |- خلي في اللعبه في كل مره تتدمج رح يقل القرافيك |-</div></div><div><br></div><div>تمام هذا اللي حاولت أبلش اسويه ... ولكن اول أشي كنت احاول أغير ال reslotuion تبعت اللعبه بكل مره تتدمج ... ولكن اذا انت عمرك لعبت اي لعبه ف تعرف .. بانه كل مره تغير فيها الريزلوشن اللعبه رح تهنق لمده كم ثانيه لحد ماا تغير .. واللي خلاني لازم افكر بطريقه ثانيه ما تخلي اللعبه عباره عن SlideShow ...&nbsp;</div><div><br></div><div>ف الطريقه&nbsp; كانت باني أرندر اللي تشوفه الكاميرا على Texture منفصل ... وهذا الTexture أحطه فوق الشاشه تبع الاعب زي كانها صوره يعني فوق الشاشه كلها ... واللي اقدر اغير الريزلوشن تبع الصوره بدون ما اغير رزلوشن اللعبه عشان ما تعلق ... وبهيك نكون سوينها نفس الاشي ولكن بدون ما ندمر تجربة الاعب ...</div><div><br></div><div><br></div>"
+        },
+        {
+          "id": "b-1781351494208",
+          "title": "فيديو 10",
+          "content": "| كاميرا |- خلي عباس دي واترسون البوس باللعبه ... اوك طبعاا لازم أضيف ابو شوقي للعبه |-<div><br></div><div>ف اول أشي جبت مجسم له واضفته على اللعبه عشان اخليه البوس النهائي للعبه ... وطبعا بعدها أضفت له انميشن المشي وخليته يلحق وراك ....</div><div><br></div><div>وطبعا بما انه البوس باللعبه ف أضفت له الهيلث بار تبعه زي العاب السولز ...&nbsp;</div><div><br></div><div>ورح يكون اكثر من حركه وهجوم ... ف اول هجوم اذا كنت قريب منه رح يحاول يضربك بايده بشكل طبيعي اذا انك قريب منه .... وهذا الهيت بوكس هو اللي رح يحدد اذا رح يضربك او لا ...&nbsp;</div><div><br></div><div>ولكن اذا انت بعيد عنه شوي ف لازم يغير من هجومه ... ف اول أشي أضفت له انميشن وهو يقفز ... ف هجومه الثاني رح يكون انه يقفز ويحاول يضرب الارض .. واذا انت قريب منه ف رح يدمجك ... واللي يحليه يقدر يقرب منك لو بعدت بطريقه اسهل عشان ما تضل تهرب منه ...</div><div><br></div><div>| كاميرا |- سوي شخصيه ترمي سيارات |-&nbsp;</div><div><br></div><div>تمام ف هذا رح يكون كمان هجوم ثاني عنده ... ف اذا انت بعدي عنه ف هو بشكل عشوائ رح يختار واحد من الهجومين ... اما يقفز عشان يحول يقتلكك .. او رح يحاول يرمي عليك سياره .. واللي اذا اصابتك رح تنفجر وتدمجك ...</div><div><br></div><div>وبرضو&nbsp; أضفت له انميشن بس تقتله عشان يموت ...&nbsp;</div><div><br></div><div>وبرضو خليت اللعبه ترسبن الاعداء كل شوي وترسبن بوس كل فتره معينه معه عدد معين من الاعداء كل شوي ... عشان اللعبه تضل للابد وما تنتهي ...</div><div><br></div><div>| كاميرا |- بالله بالله لا ترد ع التعليقات ... ف رح اسمع لهذا التعليق ...واللي معناه اذا رديت ع هذا المتعليق ف انا رديت ع التعليقات ... لاتنسو تشيكو الكورس تحت .. وتجربو اللعبه من تحت برضو .. وبس والله |-</div><div><br></div><div><br></div><div><br></div>"
+        }
+      ],
+      "updatedAt": 1782860454448,
+      "createdAt": 1780410978132
+    }
+  ],
+  "settings": {
+    "globalWPM": 195,
+    "defaultFont": "Arial",
+    "defaultFontSize": 20
+  },
+  "exportDate": "2026-07-15T13:22:44.421Z"
+}

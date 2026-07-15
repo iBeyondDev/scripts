@@ -277,11 +277,56 @@
           }
         };
 
+        // Load an existing backup file's contents into the app (scripts +
+        // settings) so linking to an already-populated file starts from it
+        // instead of wiping it.
+        const loadBackupData = (data) => {
+          if (!data || !Array.isArray(data.scripts)) return false;
+          setScripts(data.scripts);
+          localStorage.setItem(
+            "scriptflow_data_react",
+            JSON.stringify(data.scripts),
+          );
+          if (data.settings) {
+            if (data.settings.globalWPM) {
+              setGlobalWPM(data.settings.globalWPM);
+              setSettingsWpmInput(data.settings.globalWPM);
+              localStorage.setItem(
+                "scriptflow_wpm_react",
+                data.settings.globalWPM,
+              );
+            }
+            if (data.settings.defaultFont) {
+              setDefaultFont(data.settings.defaultFont);
+              setSettingsFontInput(data.settings.defaultFont);
+              localStorage.setItem(
+                "scriptflow_font_react",
+                data.settings.defaultFont,
+              );
+            }
+            if (data.settings.defaultFontSize) {
+              setDefaultFontSize(data.settings.defaultFontSize);
+              setSettingsFontSizeInput(data.settings.defaultFontSize);
+              localStorage.setItem(
+                "scriptflow_fontsize_react",
+                data.settings.defaultFontSize,
+              );
+            }
+          }
+          return true;
+        };
+
         const linkBackupFile = async () => {
           if (!FS_SUPPORTED) return;
+
+          // First let the user pick an EXISTING backup file to connect to and
+          // load from. If they don't select one (cancel), fall back to
+          // creating a brand new backup file.
+          let handle = null;
+          let openedExisting = false;
           try {
-            const handle = await window.showSaveFilePicker({
-              suggestedName: "scriptflow_backup.json",
+            const [picked] = await window.showOpenFilePicker({
+              multiple: false,
               types: [
                 {
                   description: "JSON Backup",
@@ -289,11 +334,74 @@
                 },
               ],
             });
+            handle = picked;
+            openedExisting = true;
+          } catch (e) {
+            if (e.name !== "AbortError") {
+              console.error(e);
+              return;
+            }
+            // Nothing selected -> create a new backup file instead.
+            try {
+              handle = await window.showSaveFilePicker({
+                suggestedName: "scriptflow_backup.json",
+                types: [
+                  {
+                    description: "JSON Backup",
+                    accept: { "application/json": [".json"] },
+                  },
+                ],
+              });
+            } catch (e2) {
+              if (e2.name !== "AbortError") console.error(e2);
+              return;
+            }
+          }
+
+          try {
+            // showOpenFilePicker grants read-only by default, so request write.
+            const perm = await handle.requestPermission({ mode: "readwrite" });
+            if (perm !== "granted") {
+              await idbSetHandle(handle);
+              setBackupHandle(handle);
+              setBackupFileName(handle.name);
+              setBackupStatus("needs-permission");
+              return;
+            }
+
+            let loadedFromFile = false;
+            if (openedExisting) {
+              // Connect to the chosen file and load whatever it already holds
+              // rather than overwriting it.
+              try {
+                const file = await handle.getFile();
+                const text = (await file.text()).trim();
+                if (text) {
+                  const parsed = JSON.parse(text);
+                  loadedFromFile = loadBackupData(parsed);
+                }
+              } catch (e) {
+                // Empty/unreadable/not-our-format file -> just use it as the
+                // save target without loading anything.
+              }
+            }
+
             await idbSetHandle(handle);
             setBackupHandle(handle);
             setBackupFileName(handle.name);
             setBackupStatus("connected");
-            await writeBackup(scripts, globalWPM, defaultFont, defaultFontSize, handle);
+
+            // Only write immediately when we did NOT load existing data, so a
+            // file that already has scripts is never clobbered on connect.
+            if (!loadedFromFile) {
+              await writeBackup(
+                scripts,
+                globalWPM,
+                defaultFont,
+                defaultFontSize,
+                handle,
+              );
+            }
           } catch (e) {
             if (e.name !== "AbortError") console.error(e);
           }
